@@ -3,6 +3,7 @@ import { ReactReader } from "react-reader";
 import Handlers from "./Handlers";
 import PopUpMenu from "./PopUpMenu/PopUpMenu";
 import useReaderState from "./state";
+import Topbar from "./TopBar";
 
 /* TO-DO
 
@@ -75,6 +76,7 @@ function Reader() {
   useEffect(() => console.log("Book Data", bookData), [bookData]);
   return (
     <>
+      <Topbar shown={true} title={"Text Top bar"} bg={"#CCCCCC"} />
       <PopUpMenu coord={coord} show={show} hide={() => setShow(false)} />
       <div style={{ position: "relative", height: "100vh", width: "100vw" }}>
         <ReactReader
