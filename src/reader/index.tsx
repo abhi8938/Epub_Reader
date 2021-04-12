@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ReactReader } from "react-reader";
 import Handlers from "./Handlers";
+import PopUpMenu from "./PopUpMenu/PopUpMenu";
 import useReaderState from "./state";
 
 /* TO-DO
@@ -33,8 +34,32 @@ function Reader() {
   const epubRef: any = useRef(null);
   const { disableContextMenu, onReady } = Handlers();
   const { handleBook, bookData } = useReaderState();
-
+  const [coord, setCoord] = useState({ x: 0, y: 0 });
   const [load, setLoad] = useState(true);
+  const [show, setShow] = useState(false);
+
+  const test = () => {
+    let iframeBody = document.getElementsByTagName("iframe");
+    var doc = iframeBody[0]?.contentWindow?.document;
+    const sel = doc?.getSelection();
+
+    // check if selection exists
+    if (!sel?.rangeCount) return null;
+
+    // get range
+    let range = sel.getRangeAt(0).cloneRange();
+    if (!range.getClientRects) return null;
+
+    // get client rect
+    range.collapse(true);
+    let rects = range.getClientRects();
+    if (rects.length <= 0) return null;
+
+    // return coord
+    let rect = rects[0];
+    setCoord({ x: rect.left, y: document.body.clientHeight - rect.top });
+    return { x: rect.x, y: rect.y };
+  };
 
   useEffect(() => {
     load === false && disableContextMenu(1000);
@@ -49,26 +74,34 @@ function Reader() {
 
   useEffect(() => console.log("Book Data", bookData), [bookData]);
   return (
-    <div style={{ position: "relative", height: "100vh", width: "100vw" }}>
-      <ReactReader
-        ref={epubRef}
-        url={"https://s3.amazonaws.com/epubjs/books/moby-dick.epub"}
-        title={"Test Epub"}
-        locationChanged={(epubcifi: any) => {
-          console.log(epubcifi);
-          disableContextMenu(0);
-        }}
-        tocChanged={(data: any) => {
-          setLoad(false);
-        }}
-        getRendition={(rendition: any) => {
-          console.log("rendition", rendition);
-          rendition.themes.default({
-            body: {},
-          });
-        }}
-      />
-    </div>
+    <>
+      <PopUpMenu coord={coord} show={show} hide={() => setShow(false)} />
+      <div style={{ position: "relative", height: "100vh", width: "100vw" }}>
+        <ReactReader
+          ref={epubRef}
+          url={"https://s3.amazonaws.com/epubjs/books/moby-dick.epub"}
+          title={"Test Epub"}
+          handleTextSelected={(data) => {
+            setShow(true);
+            console.log("selected", data);
+            console.log("co - ord", test());
+          }}
+          locationChanged={(epubcifi: any) => {
+            console.log(epubcifi);
+            disableContextMenu(0);
+          }}
+          tocChanged={(data: any) => {
+            setLoad(false);
+          }}
+          getRendition={(rendition: any) => {
+            console.log("rendition", rendition);
+            rendition.themes.default({
+              body: {},
+            });
+          }}
+        />
+      </div>
+    </>
   );
 }
 
