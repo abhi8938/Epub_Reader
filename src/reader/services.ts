@@ -1,3 +1,4 @@
+//@ts-nocheck
 import axios from "axios";
 import { useEffect, useRef } from "react";
 import theme from "./Assets/theme";

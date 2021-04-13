@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React, { useEffect, useRef, useState } from "react";
 import { ReactReader } from "react-reader";
 import Handlers from "./Handlers";

@@ -7,7 +7,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native-web";
 import React, { FunctionComponent, useEffect, useRef } from "react";
 import theme from "./Assets/theme";
 import { IoSettings } from "react-icons/io5";
-
+//@ts-nocheck
 // //FUNCTION TO CHECK FOE PROPS UPDATE
 // const propsDidUpdate = (callback: any, deps: any) => {
 //   const hasMount = useRef(false);

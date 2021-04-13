@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { default_ann, default_config } from "./Assets/theme";
 
+//@ts-nocheck
+
 const useReaderState = () => {
   //* STATE
   const [src, setSrc] = useState("");

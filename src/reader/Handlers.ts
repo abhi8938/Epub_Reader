@@ -1,3 +1,4 @@
+//@ts-nocheck
 const Handlers = () => {
   const onPress = (
     cfi: any,
