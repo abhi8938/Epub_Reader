@@ -36,6 +36,7 @@ function Reader() {
   const { disableContextMenu } = Handlers();
   const { handleBook, bookData } = useReaderState();
   const [coord, setCoord] = useState({ x: 0, y: 0 });
+
   const [load, setLoad] = useState(true);
   const [show, setShow] = useState(false);
 
@@ -64,14 +65,16 @@ function Reader() {
 
   useEffect(() => {
     load === false && disableContextMenu(1000);
-  }, [load, disableContextMenu]);
+    // eslint-disable-next-line
+  }, [load]);
 
   useEffect(() => {
     if (epubRef.current?.readerRef.current.book.isOpen === true) {
       console.log("book", epubRef.current?.readerRef.current.book);
       handleBook("book", epubRef.current?.readerRef.current.book);
     }
-  }, [epubRef.current?.readerRef, handleBook]);
+    // eslint-disable-next-line
+  }, [epubRef.current?.readerRef]);
 
   useEffect(() => console.log("Book Data", bookData), [bookData]);
   return (
@@ -84,13 +87,14 @@ function Reader() {
           url={"https://s3.amazonaws.com/epubjs/books/moby-dick.epub"}
           title={"Test Epub"}
           handleTextSelected={(data) => {
-            setShow(true);
             console.log("selected", data);
-            console.log("co - ord", test());
+            const value = test();
+            setShow(true);
+            console.log("co - ord", value);
           }}
           locationChanged={(epubcifi: any) => {
             console.log(epubcifi);
-            disableContextMenu(0);
+            disableContextMenu(1000);
           }}
           tocChanged={(data: any) => {
             setLoad(false);

@@ -65,15 +65,17 @@ const Handlers = () => {
     setTimeout(() => {
       let iframeBody = document.getElementsByTagName("iframe");
       //@ts-ignore
-      iframeBody[0].contentWindow.document.addEventListener(
-        "contextmenu",
-        function (e) {
-          console.log("contextmenu");
-          e.preventDefault();
-          e.stopPropagation();
-          return false;
-        }
-      );
+      if (iframeBody.length !== 0) {
+        iframeBody[0].contentWindow.document.addEventListener(
+          "contextmenu",
+          function (e) {
+            console.log("contextmenu");
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+          }
+        );
+      }
     }, timeout);
   };
 
