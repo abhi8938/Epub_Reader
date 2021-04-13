@@ -76,7 +76,7 @@ function Reader() {
   useEffect(() => console.log("Book Data", bookData), [bookData]);
   return (
     <>
-      <Topbar shown={true} title={"Text Top bar"} bg={"#CCCCCC"} />
+      {/* <Topbar shown={true} title={"Text Top bar"} bg={"#CCCCCC"} /> */}
       <PopUpMenu coord={coord} show={show} hide={() => setShow(false)} />
       <div style={{ position: "relative", height: "100vh", width: "100vw" }}>
         <ReactReader

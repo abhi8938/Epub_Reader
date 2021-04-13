@@ -1,8 +1,9 @@
 .Modal {
   position: fixed;
   z-index: 2;
-  height: 100vh;
-  width: 100vw;
+  width: 50%;
+  width: 250px;
+  outline: transparent;
 }
 
 .Overlay {
@@ -14,39 +15,33 @@
   right: 0;
   bottom: 0;
   z-index: 2;
-}
-
-.Container {
-  position: fixed;
-  height: 100vh;
-  width: 100vw;
   background-color: rgba(0, 0, 0, 0.05);
 }
 
-.PopUpContainer {
-  width: 50%;
-  width: 300px;
-}
-
-.PopUpMenu {
-  display: flex;
+.menuContainer {
   width: 100%;
-  flex-direction: row;
-  justify-content: space-around;
-  border-radius: 10px;
   padding: 0px 5px;
 }
 
-.label {
+.annotationMenu {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.buttons {
   display: inline-block;
   margin: 0px;
-  padding: 8px 0px;
+  padding: 10px 0px;
+  outline: transparent;
+  border: transparent;
+  background-color: transparent;
 }
 
 .line {
   height: inherit;
   width: 1px;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 .triangle {
@@ -56,4 +51,39 @@
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
   border-top: 16px solid #cccccc;
+}
+
+.HighlightMenu {
+  display: flex;
+  flex-direction: row;
+  padding: 0px 5px;
+}
+
+.CircleContainer {
+  width: 60%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  padding: 9px 0px;
+}
+
+.Circle {
+  height: 22px;
+  width: 22px;
+  border-radius: 15px;
+}
+
+.IconContainer {
+  width: 40%;
+  height: inherit;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.icon {
+  align-self: center;
+  color: rgba(0, 0, 0, 0.8);
+  font-size: 18px;
 }

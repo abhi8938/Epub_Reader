@@ -2,16 +2,11 @@
 //* - (DropDown - (Night Mode - Brigtness controller Slider - FontSize( Medium / large))
 //* - Bookmark page
 
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Animated,
-} from "react-native-web";
+//@ts-ignore
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native-web";
 import React, { FunctionComponent, useEffect, useRef } from "react";
 import theme from "./Assets/theme";
+import { IoSettings } from "react-icons/io5";
 
 // //FUNCTION TO CHECK FOE PROPS UPDATE
 // const propsDidUpdate = (callback: any, deps: any) => {
@@ -50,6 +45,10 @@ const Topbar: FunctionComponent<props> = ({
     <View style={[styles.header, { backgroundColor: bg }]}>
       <TouchableOpacity style={styles.backButton} onPress={onBackPress}>
         {/* <Icon name="chevron-left" size={44} /> */}
+        <i
+          data-feather="circle"
+          style={{ height: 40, width: 40, color: "#fff" }}
+        ></i>
         <Text>Left</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.backButton} onPress={onNavPress}>
