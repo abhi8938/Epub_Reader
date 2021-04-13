@@ -1,4 +1,4 @@
-import classNames from "classnames";
+//@ts-nocheck
 import React, { FunctionComponent, useState } from "react";
 import Modal from "react-modal";
 import styles from "./PopUpStyles.module.css";
@@ -6,7 +6,6 @@ import { IoTrash } from "react-icons/io5";
 import { FiEdit3 } from "react-icons/fi";
 
 Modal.setAppElement("#root");
-
 type props = {
   coord: { x: number; y: number };
   show: boolean;
@@ -54,7 +53,7 @@ const PopUpMenu: FunctionComponent<props> = ({ coord, show, hide }) => {
             </div>
           </div>
         )}
-        {modalType == "highlight" && (
+        {modalType === "highlight" && (
           <div
             className={styles.PopUpMenu}
             style={{

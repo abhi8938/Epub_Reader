@@ -1,4 +1,4 @@
-export default {
+const theme = {
   COLORS: {
     DEFAULT: "#FFFFFF",
     PRIMARY: "#FF9933",
@@ -117,3 +117,5 @@ export const default_ann = {
   text: "",
   note: "",
 };
+
+export default theme;

@@ -54,8 +54,6 @@ const useReaderState = () => {
     epubcfi: "",
   });
 
-  const [Error, setError] = useState("");
-
   //* STATE HANDLERS
 
   const handleBook = (key: string, value: any) => {

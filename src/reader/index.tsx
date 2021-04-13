@@ -4,7 +4,6 @@ import { ReactReader } from "react-reader";
 import Handlers from "./Handlers";
 import PopUpMenu from "./PopUpMenu/PopUpMenu";
 import useReaderState from "./state";
-import Topbar from "./TopBar";
 
 /* TO-DO
 
@@ -34,7 +33,7 @@ import Topbar from "./TopBar";
 
 function Reader() {
   const epubRef: any = useRef(null);
-  const { disableContextMenu, onReady } = Handlers();
+  const { disableContextMenu } = Handlers();
   const { handleBook, bookData } = useReaderState();
   const [coord, setCoord] = useState({ x: 0, y: 0 });
   const [load, setLoad] = useState(true);
@@ -65,14 +64,14 @@ function Reader() {
 
   useEffect(() => {
     load === false && disableContextMenu(1000);
-  }, [load]);
+  }, [load, disableContextMenu]);
 
   useEffect(() => {
     if (epubRef.current?.readerRef.current.book.isOpen === true) {
       console.log("book", epubRef.current?.readerRef.current.book);
       handleBook("book", epubRef.current?.readerRef.current.book);
     }
-  }, [epubRef.current?.readerRef]);
+  }, [epubRef.current?.readerRef, handleBook]);
 
   useEffect(() => console.log("Book Data", bookData), [bookData]);
   return (
