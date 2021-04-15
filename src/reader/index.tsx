@@ -101,7 +101,15 @@ function Reader() {
         onNext={() => epubRef.current.next()}
         onPrev={() => epubRef.current.prev()}
       />
-      <div style={{ position: "relative", height: "95vh", width: "100vw" }}>
+      <div
+        style={{
+          position: "relative",
+          height: "100vh",
+          width: "100vw",
+          boxSizing: "border-box",
+          paddingBottom: "50px",
+        }}
+      >
         <ReactReader
           ref={epubRef}
           url={"https://s3.amazonaws.com/epubjs/books/moby-dick.epub"}

@@ -3,7 +3,6 @@
 }
 
 .parent {
-  height: 20vh;
   width: "100%";
   background-color: white;
 }
@@ -22,7 +21,7 @@
 
 .topBar {
   display: flex;
-  width: 40%;
+  width: 50%;
   align-items: center;
   justify-content: space-between;
   padding: 7px 5%;
