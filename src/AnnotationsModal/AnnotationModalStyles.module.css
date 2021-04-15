@@ -21,7 +21,8 @@
 
 .topBar {
   display: flex;
-  width: 50%;
+  width: 70%;
+  max-width: 220px;
   align-items: center;
   justify-content: space-between;
   padding: 7px 5%;

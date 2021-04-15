@@ -113,7 +113,6 @@ function Reader() {
         <ReactReader
           ref={epubRef}
           url={"https://s3.amazonaws.com/epubjs/books/moby-dick.epub"}
-          title={"Test Epub"}
           handleTextSelected={(data) => {
             console.log("selected", data);
             const value = test();
