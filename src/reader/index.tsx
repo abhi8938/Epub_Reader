@@ -1,9 +1,13 @@
 //@ts-nocheck
 import React, { useEffect, useRef, useState } from "react";
 import { ReactReader } from "react-reader";
+import AnnotationModal from "../AnnotationsModal/AnnotationsModal";
+import BottomBar from "../BottomBar/BottomBar";
+import SearchModal from "../SearchModal/SearchModal";
 import Handlers from "./Handlers";
 import PopUpMenu from "./PopUpMenu/PopUpMenu";
 import useReaderState from "./state";
+import Topbar from "./TopBar/TopBar";
 
 /* TO-DO
 
@@ -39,7 +43,8 @@ function Reader() {
 
   const [load, setLoad] = useState(true);
   const [show, setShow] = useState(false);
-
+  const [showSidebar, setShowSideBar] = useState(false);
+  const [showAnnotation, setShowAnnotation] = useState(false);
   const test = () => {
     let iframeBody = document.getElementsByTagName("iframe");
     var doc = iframeBody[0]?.contentWindow?.document;
@@ -79,9 +84,24 @@ function Reader() {
   useEffect(() => console.log("Book Data", bookData), [bookData]);
   return (
     <>
-      {/* <Topbar shown={true} title={"Text Top bar"} bg={"#CCCCCC"} /> */}
+      <SearchModal open={showSidebar} close={() => setShowSideBar(false)} />
+      <AnnotationModal
+        open={showAnnotation}
+        close={() => setShowAnnotation(false)}
+      />
+      <Topbar
+        shown={true}
+        title={"Text Top bar"}
+        bg={"#CCCCCC"}
+        onSearch={() => setShowSideBar(true)}
+        onAnnotations={() => setShowAnnotation(true)}
+      />
       <PopUpMenu coord={coord} show={show} hide={() => setShow(false)} />
-      <div style={{ position: "relative", height: "100vh", width: "100vw" }}>
+      <BottomBar
+        onNext={() => epubRef.current.next()}
+        onPrev={() => epubRef.current.prev()}
+      />
+      <div style={{ position: "relative", height: "95vh", width: "100vw" }}>
         <ReactReader
           ref={epubRef}
           url={"https://s3.amazonaws.com/epubjs/books/moby-dick.epub"}

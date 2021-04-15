@@ -66,6 +66,9 @@ const Handlers = () => {
       let iframeBody = document.getElementsByTagName("iframe");
       //@ts-ignore
       if (iframeBody.length !== 0) {
+        iframeBody[0].contentWindow.document.addEventListener("click", (e) => {
+          console.log("select event", e);
+        });
         iframeBody[0].contentWindow.document.addEventListener(
           "contextmenu",
           function (e) {

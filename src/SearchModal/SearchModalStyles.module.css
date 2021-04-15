@@ -1,0 +1,49 @@
+.overlay {
+  display: none;
+}
+
+.parent {
+  height: 20vh;
+  width: "100%";
+  background-color: white;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 3%;
+  box-sizing: border-box;
+}
+
+.backIcon {
+  font-size: 25px;
+}
+
+.inputBox {
+  background-color: #dfdfdf;
+  outline: transparent;
+  border-width: 0px;
+  margin: 0px 0px;
+  padding: 10px 0px;
+  font-size: 16px;
+  width: 80%;
+}
+.searchBar {
+  width: 80%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 1vw;
+  box-sizing: border-box;
+  background-color: #dfdfdf;
+  border-radius: 10px;
+  width: 70%;
+}
+
+.searchIcon {
+  font-size: 22px;
+  color: #c9c9c9;
+}

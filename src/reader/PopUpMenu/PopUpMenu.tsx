@@ -2,7 +2,7 @@
 import React, { FunctionComponent, useState } from "react";
 import Modal from "react-modal";
 import styles from "./PopUpStyles.module.css";
-import { IoTrash } from "react-icons/io5";
+import { IoTrash, IoClose } from "react-icons/io5";
 import { FiEdit3 } from "react-icons/fi";
 
 Modal.setAppElement("#root");
@@ -14,6 +14,7 @@ type props = {
 
 const PopUpMenu: FunctionComponent<props> = ({ coord, show, hide }) => {
   const [modalType, setModalType] = useState("annSelect");
+  const [showNote, setshowNote] = useState(false);
   return (
     <div>
       <Modal
@@ -25,6 +26,7 @@ const PopUpMenu: FunctionComponent<props> = ({ coord, show, hide }) => {
         onRequestClose={() => {
           hide();
           setModalType("annSelect");
+          setshowNote(false);
         }}
         style={{
           content: {
@@ -34,62 +36,97 @@ const PopUpMenu: FunctionComponent<props> = ({ coord, show, hide }) => {
           },
         }}
       >
-        {modalType === "annSelect" && (
-          <div
-            className={styles.PopUpMenu}
-            style={{ backgroundColor: "#CCCCCC", borderRadius: "10px" }}
-          >
-            <div className={styles.annotationMenu}>
-              <button
-                className={styles.buttons}
-                onClick={() => setModalType("highlight")}
+        {showNote === false && (
+          <>
+            {modalType === "annSelect" && (
+              <div
+                className={styles.PopUpMenu}
+                style={{ backgroundColor: "#CCCCCC", borderRadius: "10px" }}
               >
-                Notes
+                <div className={styles.annotationMenu}>
+                  <button
+                    className={styles.buttons}
+                    onClick={() => setshowNote(true)}
+                  >
+                    Notes
+                  </button>
+                  <div className={styles.line} />
+                  <button
+                    className={styles.buttons}
+                    onClick={() => setModalType("highlight")}
+                  >
+                    Highlights
+                  </button>
+                  <div className={styles.line} />
+                  <button className={styles.buttons}>Dictionary</button>
+                </div>
+              </div>
+            )}
+            {modalType === "highlight" && (
+              <div
+                className={styles.PopUpMenu}
+                style={{
+                  backgroundColor: "#CCCCCC",
+                  borderRadius: "10px",
+                }}
+              >
+                <div className={styles.HighlightMenu}>
+                  <div className={styles.CircleContainer}>
+                    <div
+                      className={styles.Circle}
+                      style={{ backgroundColor: "#F9EA62" }}
+                    />
+                    <div
+                      className={styles.Circle}
+                      style={{ backgroundColor: "#4AC6BD" }}
+                    />
+                    <div
+                      className={styles.Circle}
+                      style={{ backgroundColor: "#FF986B" }}
+                    />
+                    <div
+                      className={styles.Circle}
+                      style={{ backgroundColor: "#514545" }}
+                    />
+                  </div>
+                  <div className={styles.IconContainer}>
+                    <div className={styles.line} />
+                    <FiEdit3 className={styles.icon} />
+                    <div className={styles.line} />
+                    <IoTrash className={styles.icon} />
+                  </div>
+                </div>
+              </div>
+            )}
+            <div className={styles.triangle} />
+          </>
+        )}
+        {showNote === true && (
+          <div className={styles.noteDiv}>
+            <div className={styles.noteHeader}>
+              <p className={styles.noteHeading}>Notes</p>
+              <IoClose className={styles.closeIcon} />
+            </div>
+            <textarea
+              placeholder={"Enter Your Notes here"}
+              className={styles.noteInput}
+            />
+            <div className={styles.noteButtonDiv}>
+              <button
+                className={styles.noteButton}
+                onClick={() => setshowNote(false)}
+              >
+                Delete
               </button>
-              <div className={styles.line} />
-              <button className={styles.buttons}>Highlights</button>
-              <div className={styles.line} />
-              <button className={styles.buttons}>Dictionary</button>
+              <button
+                className={styles.noteButton}
+                onClick={() => setshowNote(false)}
+              >
+                Save
+              </button>
             </div>
           </div>
         )}
-        {modalType === "highlight" && (
-          <div
-            className={styles.PopUpMenu}
-            style={{
-              backgroundColor: "#CCCCCC",
-              borderRadius: "10px",
-            }}
-          >
-            <div className={styles.HighlightMenu}>
-              <div className={styles.CircleContainer}>
-                <div
-                  className={styles.Circle}
-                  style={{ backgroundColor: "#F9EA62" }}
-                />
-                <div
-                  className={styles.Circle}
-                  style={{ backgroundColor: "#4AC6BD" }}
-                />
-                <div
-                  className={styles.Circle}
-                  style={{ backgroundColor: "#FF986B" }}
-                />
-                <div
-                  className={styles.Circle}
-                  style={{ backgroundColor: "#514545" }}
-                />
-              </div>
-              <div className={styles.IconContainer}>
-                <div className={styles.line} />
-                <FiEdit3 className={styles.icon} />
-                <div className={styles.line} />
-                <IoTrash className={styles.icon} />
-              </div>
-            </div>
-          </div>
-        )}
-        <div className={styles.triangle} />
       </Modal>
     </div>
   );

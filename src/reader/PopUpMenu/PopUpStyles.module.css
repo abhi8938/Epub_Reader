@@ -87,3 +87,58 @@
   color: rgba(0, 0, 0, 0.8);
   font-size: 18px;
 }
+
+.noteDiv {
+  height: 22vh;
+  width: 100%;
+  background-color: white;
+  border: solid #808080 0.2px;
+  border-radius: 5px;
+}
+
+.noteHeader {
+  display: flex;
+  padding: 0px 5%;
+  justify-content: space-between;
+  height: 22%;
+  align-items: center;
+  border-bottom: solid #cccccc 3px;
+}
+
+.closeIcon {
+  font-size: 18px;
+}
+.noteHeading {
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.noteInput {
+  height: 55%;
+  width: 100%;
+  padding: 0px;
+  margin: 0px;
+  resize: none;
+  padding: 2% 2%;
+  box-sizing: border-box;
+  outline: none;
+  border: none;
+  font-size: 15px;
+}
+
+.noteButtonDiv {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  padding: 0px 2%;
+  align-items: center;
+}
+
+.noteButton {
+  display: inline-block;
+  margin-left: 10px;
+  outline: transparent;
+  border: transparent;
+  background-color: transparent;
+  font-weight: bold;
+}
