@@ -1,0 +1,17 @@
+.parent {
+  width: 100%;
+  border-bottom: solid 2px;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border: solid 2px #00000050;
+  padding: 0px 2%;
+  box-sizing: border-box;
+  border-radius: 10px;
+}
+
+.content {
+  width: 75%;
+}

@@ -46,3 +46,16 @@
   font-size: 22px;
   color: #c9c9c9;
 }
+
+.content {
+  width: 100%;
+  padding: 0px 5%;
+  box-sizing: border-box;
+}
+
+.search {
+  color: #0085ff;
+  text-decoration: underline;
+  cursor: pointer;
+  margin-right: 2%;
+}

@@ -41,3 +41,9 @@
   color: black;
   cursor: pointer;
 }
+
+.content {
+  width: 100%;
+  padding: 0px 5%;
+  box-sizing: border-box;
+}

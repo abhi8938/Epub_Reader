@@ -2,13 +2,15 @@ import React, { FunctionComponent } from "react";
 import styles from "./SearchModalStyles.module.css";
 import { IoChevronBack, IoSearch, IoCloseCircle } from "react-icons/io5";
 import Sidebar from "react-sidebar";
-
+import SearchResult from "../SearchResult/SearchResult";
+import { Data } from "../reader/Data";
 type props = {
   open: boolean;
   close: () => void;
 };
 
 const SearchModal: FunctionComponent<props> = ({ open, close }) => {
+  const { searchData } = Data();
   return (
     <Sidebar
       sidebar={
@@ -23,7 +25,12 @@ const SearchModal: FunctionComponent<props> = ({ open, close }) => {
               />
               <IoCloseCircle className={styles.searchIcon} />
             </div>
-            <p>Search</p>
+            <p className={styles.search}>Search</p>
+          </div>
+          <div className={styles.content}>
+            {searchData.map((item: any, index: number) => (
+              <SearchResult key={index} text={item.text} pageno={item.pageno} />
+            ))}
           </div>
         </div>
       }
@@ -39,7 +46,7 @@ const SearchModal: FunctionComponent<props> = ({ open, close }) => {
         },
       }}
     >
-      <p>Text</p>
+      <></>
     </Sidebar>
   );
 };

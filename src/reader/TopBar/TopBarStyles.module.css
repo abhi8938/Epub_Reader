@@ -1,22 +1,18 @@
 .parent {
-  position: fixed;
+  position: absolute;
   z-index: 2;
-  align-self: flex-end;
   box-sizing: border-box;
-  display: flex;
-  width: 60vw;
-  margin-left: 40vw;
   padding: 10px 10px;
+  right: 0px;
+  top: 0px;
 }
 .menu {
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
   margin-left: auto;
-  width: 80%;
-  max-width: 210px;
 }
 .icon {
   font-size: 28px;
   color: #808080;
+  margin: 0px 10px;
 }

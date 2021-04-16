@@ -2,6 +2,9 @@ import React, { FunctionComponent, useState } from "react";
 import styles from "./AnnotationModalStyles.module.css";
 import { IoChevronBack } from "react-icons/io5";
 import Sidebar from "react-sidebar";
+import NotesResult from "../reader/NotesResult/NotesResult";
+import BookmarkResult from "../reader/BookmarkResult/BookmarkResult";
+import { Data } from "../reader/Data";
 
 type props = {
   open: boolean;
@@ -10,6 +13,9 @@ type props = {
 
 const AnnotationModal: FunctionComponent<props> = ({ open, close }) => {
   const [selected, setSelected] = useState<"Notes" | "Bookmarks">("Bookmarks");
+  const { annotations } = Data();
+  const Bookmarks = annotations.filter((x: any) => x.type === "Bookmark");
+  const Notes = annotations.filter((x: any) => x.type === "Notes");
   return (
     <Sidebar
       sidebar={
@@ -41,6 +47,20 @@ const AnnotationModal: FunctionComponent<props> = ({ open, close }) => {
               </button>
             </div>
           </div>
+          <div className={styles.content}>
+            {selected === "Notes" &&
+              Notes.map((item: any, index: number) => (
+                <NotesResult key={index} text={item.text} color={item.color} />
+              ))}
+            {selected === "Bookmarks" &&
+              Bookmarks.map((item: any, index: number) => (
+                <BookmarkResult
+                  key={index}
+                  text={item.text}
+                  pageno={item.page}
+                />
+              ))}
+          </div>
         </div>
       }
       open={open}
@@ -55,7 +75,7 @@ const AnnotationModal: FunctionComponent<props> = ({ open, close }) => {
         },
       }}
     >
-      <p>Text</p>
+      <></>
     </Sidebar>
   );
 };
