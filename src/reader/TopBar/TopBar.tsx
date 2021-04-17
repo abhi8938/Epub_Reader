@@ -28,21 +28,19 @@ type props = {
   bg: string;
   shown: boolean;
   title: string;
-  onNavPress?: any;
-  onBackPress?: any;
   onBookMark?: any;
   onAnnotations?: () => void;
   onSearch?: () => void;
+  onSettings: () => void;
 };
 const Topbar: FunctionComponent<props> = ({
   bg,
   shown,
   title,
-  onNavPress,
-  onBackPress,
   onBookMark,
   onAnnotations,
   onSearch,
+  onSettings,
 }) => {
   return (
     <div className={styles.parent}>
@@ -53,7 +51,7 @@ const Topbar: FunctionComponent<props> = ({
           className={styles.icon}
           onClick={onAnnotations}
         />
-        <IoSettingsOutline className={styles.icon} />
+        <IoSettingsOutline className={styles.icon} onClick={onSettings} />
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import { ReactReader } from "react-reader";
 import AnnotationModal from "../AnnotationsModal/AnnotationsModal";
 import BottomBar from "../BottomBar/BottomBar";
 import SearchModal from "../SearchModal/SearchModal";
+import ConfigMenu from "./ConfigMenu/ConfigMenu";
 import Handlers from "./Handlers";
 import PopUpMenu from "./PopUpMenu/PopUpMenu";
 import useReaderState from "./state";
@@ -36,6 +37,7 @@ import Topbar from "./TopBar/TopBar";
 */
 
 function Reader() {
+  const [rendition, setRendition] = useState();
   const epubRef: any = useRef(null);
   const { disableContextMenu } = Handlers();
   const { handleBook, bookData } = useReaderState();
@@ -45,6 +47,8 @@ function Reader() {
   const [show, setShow] = useState(false);
   const [showSidebar, setShowSideBar] = useState(false);
   const [showAnnotation, setShowAnnotation] = useState(false);
+  const [showConfigMenu, setShowConfigMenu] = useState(false);
+  const [showScroll, setShowScroll] = useState(false);
   const test = () => {
     let iframeBody = document.getElementsByTagName("iframe");
     var doc = iframeBody[0]?.contentWindow?.document;
@@ -75,15 +79,33 @@ function Reader() {
 
   useEffect(() => {
     if (epubRef.current?.readerRef.current.book.isOpen === true) {
-      console.log("book", epubRef.current?.readerRef.current.book);
+      console.log("book", epubRef.current);
       handleBook("book", epubRef.current?.readerRef.current.book);
     }
     // eslint-disable-next-line
   }, [epubRef.current?.readerRef]);
 
   useEffect(() => console.log("Book Data", bookData), [bookData]);
+  useEffect(() => {
+    console.log(rendition);
+    if (rendition) {
+      if (showScroll === true) {
+        rendition.flow("scrolled");
+      } else {
+        rendition.flow("paginated");
+      }
+    }
+    console.log("scroll", showScroll);
+    // eslint-disable-next-line
+  }, [showScroll]);
   return (
     <>
+      <ConfigMenu
+        open={showConfigMenu}
+        close={() => setShowConfigMenu(false)}
+        onScrollChnage={(value: boolean) => setShowScroll(value)}
+        scrollValue={showScroll}
+      />
       <SearchModal open={showSidebar} close={() => setShowSideBar(false)} />
       <AnnotationModal
         open={showAnnotation}
@@ -95,6 +117,7 @@ function Reader() {
         bg={"#CCCCCC"}
         onSearch={() => setShowSideBar(true)}
         onAnnotations={() => setShowAnnotation(true)}
+        onSettings={() => setShowConfigMenu(true)}
       />
       <PopUpMenu coord={coord} show={show} hide={() => setShow(false)} />
       <BottomBar
@@ -123,12 +146,17 @@ function Reader() {
             console.log(epubcifi);
             disableContextMenu(1000);
           }}
+          epubOptions={{
+            manager: "continuous",
+            flow: "paginated",
+          }}
           tocChanged={(data: any) => {
             setLoad(false);
           }}
-          getRendition={(rendition: any) => {
-            console.log("rendition", rendition);
-            rendition.themes.default({
+          getRendition={(data: any) => {
+            console.log("rendition", data);
+            setRendition(data);
+            data.themes.default({
               body: {},
             });
           }}
