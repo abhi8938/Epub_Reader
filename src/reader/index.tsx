@@ -9,7 +9,7 @@ import Handlers from "./Handlers";
 import PopUpMenu from "./PopUpMenu/PopUpMenu";
 import useReaderState from "./state";
 import Topbar from "./TopBar/TopBar";
-
+import Tippy from "@tippyjs/react";
 /* TO-DO
 
   1.) Save Annotations created by user
@@ -35,7 +35,6 @@ import Topbar from "./TopBar/TopBar";
   10.) Connect Nav Screen to notes and bookmarks
 
 */
-
 function Reader() {
   const [rendition, setRendition] = useState();
   const epubRef: any = useRef(null);
@@ -49,31 +48,37 @@ function Reader() {
   const [showAnnotation, setShowAnnotation] = useState(false);
   const [showConfigMenu, setShowConfigMenu] = useState(false);
   const [showScroll, setShowScroll] = useState(false);
-  const test = () => {
+  const [contHeight, setContHeight] = useState(0);
+  const [popHeight, setPopHeight] = useState(0);
+  const getPosition = (e?: any) => {
+    var posx = 0;
+    var posy = 0;
+    let selection;
     let iframeBody = document.getElementsByTagName("iframe");
-    var doc = iframeBody[0]?.contentWindow?.document;
-    const sel = doc?.getSelection();
-
-    // check if selection exists
-    if (!sel?.rangeCount) return null;
-
-    // get range
-    let range = sel.getRangeAt(0).cloneRange();
-    if (!range.getClientRects) return null;
-
-    // get client rect
-    range.collapse(true);
-    let rects = range.getClientRects();
-    if (rects.length <= 0) return null;
-
-    // return coord
-    let rect = rects[0];
-    setCoord({ x: rect.left, y: document.body.clientHeight - rect.top });
-    return { x: rect.x, y: rect.y };
+    for (var i = 0, len = iframeBody.length; i < len; i++) {
+      var doc = iframeBody[i]?.contentWindow?.document;
+      const sel = doc?.getSelection();
+      if (sel.type === "None") continue;
+      selection = sel;
+    }
+    if (selection) {
+      let range = selection.getRangeAt(0).cloneRange();
+      console.log("range", range.getClientRects());
+      if (!range.getClientRects) return;
+      posy = range.getClientRects().item(0).y;
+      posx = range.getClientRects().item(0).x;
+      console.log("x,y", posx, posy);
+      setCoord({
+        x: posx,
+        y: posy + 45,
+      });
+    }
   };
 
   useEffect(() => {
-    load === false && disableContextMenu(1000);
+    if (load === false) {
+      disableContextMenu();
+    }
     // eslint-disable-next-line
   }, [load]);
 
@@ -85,9 +90,7 @@ function Reader() {
     // eslint-disable-next-line
   }, [epubRef.current?.readerRef]);
 
-  useEffect(() => console.log("Book Data", bookData), [bookData]);
   useEffect(() => {
-    console.log(rendition);
     if (rendition) {
       if (showScroll === true) {
         rendition.flow("scrolled");
@@ -95,7 +98,6 @@ function Reader() {
         rendition.flow("paginated");
       }
     }
-    console.log("scroll", showScroll);
     // eslint-disable-next-line
   }, [showScroll]);
   return (
@@ -138,13 +140,15 @@ function Reader() {
           url={"https://s3.amazonaws.com/epubjs/books/moby-dick.epub"}
           handleTextSelected={(data) => {
             console.log("selected", data);
-            const value = test();
+            getPosition();
+            let iframeBody = document.getElementsByTagName("iframe");
+            let popmenu = document.getElementById("pop_menu");
+            // setContHeight();
+            console.log("pop", popmenu, iframeBody[0]);
             setShow(true);
-            console.log("co - ord", value);
           }}
           locationChanged={(epubcifi: any) => {
-            console.log(epubcifi);
-            disableContextMenu(1000);
+            disableContextMenu();
           }}
           epubOptions={{
             manager: "continuous",
@@ -154,11 +158,7 @@ function Reader() {
             setLoad(false);
           }}
           getRendition={(data: any) => {
-            console.log("rendition", data);
             setRendition(data);
-            data.themes.default({
-              body: {},
-            });
           }}
         />
       </div>

@@ -1,8 +1,16 @@
 //@ts-nocheck
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import Modal from "react-modal";
 import styles from "./PopUpStyles.module.css";
-import { IoTrash, IoClose } from "react-icons/io5";
+import {
+  IoTrash,
+  IoClose,
+  IoDocument,
+  IoPencil,
+  IoBusiness,
+  IoBook,
+  IoSearch,
+} from "react-icons/io5";
 import { FiEdit3 } from "react-icons/fi";
 
 Modal.setAppElement("#root");
@@ -15,6 +23,10 @@ type props = {
 const PopUpMenu: FunctionComponent<props> = ({ coord, show, hide }) => {
   const [modalType, setModalType] = useState("annSelect");
   const [showNote, setshowNote] = useState(false);
+  useEffect(() => {
+    // console.log("x,y", coord);
+    return () => {};
+  }, [coord]);
   return (
     <div>
       <Modal
@@ -31,75 +43,66 @@ const PopUpMenu: FunctionComponent<props> = ({ coord, show, hide }) => {
         style={{
           content: {
             position: "absolute",
-            left: coord.x + 30,
-            bottom: coord.y - 40,
+            top: coord.y,
+            marginLeft: coord.x,
           },
         }}
       >
         {showNote === false && (
-          <>
+          <div
+            className={styles.popup}
+            style={{ flexDirection: "row", display: "flex" }}
+          >
             {modalType === "annSelect" && (
-              <div
-                className={styles.PopUpMenu}
-                style={{ backgroundColor: "#CCCCCC", borderRadius: "10px" }}
-              >
+              <div style={{ backgroundColor: "#CCCCCC", borderRadius: "5px" }}>
                 <div className={styles.annotationMenu}>
-                  <button
-                    className={styles.buttons}
-                    onClick={() => setshowNote(true)}
-                  >
-                    Notes
-                  </button>
+                  <div className={styles.selectable}>
+                    <IoSearch
+                      className={styles.icon}
+                      onClick={() => setshowNote(true)}
+                    />
+                  </div>
                   <div className={styles.line} />
-                  <button
-                    className={styles.buttons}
-                    onClick={() => setModalType("highlight")}
-                  >
-                    Highlights
-                  </button>
+                  <div className={styles.selectable}>
+                    <FiEdit3
+                      className={styles.icon}
+                      onClick={() => setModalType("highlight")}
+                    />
+                  </div>
                   <div className={styles.line} />
-                  <button className={styles.buttons}>Dictionary</button>
+
+                  <div className={styles.selectable}>
+                    <IoBook className={styles.icon} />
+                  </div>
                 </div>
-              </div>
-            )}
-            {modalType === "highlight" && (
-              <div
-                className={styles.PopUpMenu}
-                style={{
-                  backgroundColor: "#CCCCCC",
-                  borderRadius: "10px",
-                }}
-              >
-                <div className={styles.HighlightMenu}>
-                  <div className={styles.CircleContainer}>
-                    <div
-                      className={styles.Circle}
-                      style={{ backgroundColor: "#F9EA62" }}
-                    />
-                    <div
-                      className={styles.Circle}
-                      style={{ backgroundColor: "#4AC6BD" }}
-                    />
-                    <div
-                      className={styles.Circle}
-                      style={{ backgroundColor: "#FF986B" }}
-                    />
-                    <div
-                      className={styles.Circle}
-                      style={{ backgroundColor: "#514545" }}
-                    />
-                  </div>
-                  <div className={styles.IconContainer}>
-                    <div className={styles.line} />
-                    <FiEdit3 className={styles.icon} />
-                    <div className={styles.line} />
-                    <IoTrash className={styles.icon} />
-                  </div>
+                <div className={styles.line} />
+                <div className={styles.CircleContainer}>
+                  <div
+                    className={styles.Circle}
+                    style={{ backgroundColor: "#F9EA62" }}
+                  />
+                  <div
+                    className={styles.Circle}
+                    style={{ backgroundColor: "#4AC6BD" }}
+                  />
+                  <div
+                    className={styles.Circle}
+                    style={{ backgroundColor: "#FF986B" }}
+                  />
+                  <div
+                    className={styles.Circle}
+                    style={{ backgroundColor: "#514545" }}
+                  />
+                </div>
+
+                <div className={styles.line} />
+                <div className={styles.selectable}>
+                  <IoTrash className={styles.icon} />
                 </div>
               </div>
             )}
             <div className={styles.triangle} />
-          </>
+          </div>
         )}
         {showNote === true && (
           <div className={styles.noteDiv}>

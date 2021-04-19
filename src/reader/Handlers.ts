@@ -62,24 +62,19 @@ const Handlers = () => {
   const onError = (message: any) => {};
 
   const disableContextMenu = (timeout: any) => {
-    setTimeout(() => {
-      let iframeBody = document.getElementsByTagName("iframe");
-      //@ts-ignore
-      if (iframeBody.length !== 0) {
-        iframeBody[0].contentWindow.document.addEventListener("click", (e) => {
-          console.log("select event", e);
-        });
-        iframeBody[0].contentWindow.document.addEventListener(
-          "contextmenu",
-          function (e) {
-            console.log("contextmenu");
-            e.preventDefault();
-            e.stopPropagation();
-            return false;
-          }
-        );
-      }
-    }, timeout);
+    let iframeBody = document.getElementsByTagName("iframe");
+    for (var i = 0, len = iframeBody.length; i < len; i++) {
+      var taskItem = iframeBody[i];
+      taskItem.contentWindow.document.addEventListener(
+        "contextmenu",
+        function (e) {
+          e.preventDefault();
+          console.log("event", e);
+          e.stopPropagation();
+        },
+        false
+      );
+    }
   };
 
   return {
