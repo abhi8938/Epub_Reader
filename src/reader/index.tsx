@@ -9,7 +9,6 @@ import Handlers from "./Handlers";
 import PopUpMenu from "./PopUpMenu/PopUpMenu";
 import useReaderState from "./state";
 import Topbar from "./TopBar/TopBar";
-import Tippy from "@tippyjs/react";
 /* TO-DO
 
   1.) Save Annotations created by user
@@ -39,7 +38,7 @@ function Reader() {
   const [rendition, setRendition] = useState();
   const epubRef: any = useRef(null);
   const { disableContextMenu } = Handlers();
-  const { handleBook, bookData } = useReaderState();
+  const { handleBook } = useReaderState();
   const [coord, setCoord] = useState({ x: 0, y: 0 });
 
   const [load, setLoad] = useState(true);
@@ -48,8 +47,10 @@ function Reader() {
   const [showAnnotation, setShowAnnotation] = useState(false);
   const [showConfigMenu, setShowConfigMenu] = useState(false);
   const [showScroll, setShowScroll] = useState(false);
-  const [contHeight, setContHeight] = useState(0);
-  const [popHeight, setPopHeight] = useState(0);
+  const [fontSize, setFontSize] = useState(16);
+  const [color, setColor] = useState();
+  // const [contHeight, setContHeight] = useState(0);
+  // const [popHeight, setPopHeight] = useState(0);
   const getPosition = (e?: any) => {
     var posx = 0;
     var posy = 0;
@@ -100,6 +101,21 @@ function Reader() {
     }
     // eslint-disable-next-line
   }, [showScroll]);
+
+  const onColorChange = (color: string) => {
+    setColor(color);
+    rendition.themes.default({
+      body: { "background-color": color },
+    });
+  };
+
+  useEffect(() => {
+    if (rendition) {
+      rendition.themes.fontSize(fontSize + "px");
+    }
+    // eslint-disable-next-line
+  }, [fontSize]);
+
   return (
     <>
       <ConfigMenu
@@ -107,6 +123,9 @@ function Reader() {
         close={() => setShowConfigMenu(false)}
         onScrollChnage={(value: boolean) => setShowScroll(value)}
         scrollValue={showScroll}
+        onColorChange={onColorChange}
+        increaseSize={() => setFontSize(fontSize + 2)}
+        decreaseSize={() => setFontSize(fontSize - 2)}
       />
       <SearchModal open={showSidebar} close={() => setShowSideBar(false)} />
       <AnnotationModal
@@ -123,6 +142,7 @@ function Reader() {
       />
       <PopUpMenu coord={coord} show={show} hide={() => setShow(false)} />
       <BottomBar
+        color={color}
         onNext={() => epubRef.current.next()}
         onPrev={() => epubRef.current.prev()}
       />
@@ -159,6 +179,7 @@ function Reader() {
           }}
           getRendition={(data: any) => {
             setRendition(data);
+            console.log("rendition", data);
           }}
         />
       </div>
@@ -167,12 +188,3 @@ function Reader() {
 }
 
 export default Reader;
-
-//   const onSelect = (data: any) => {
-//     console.log("selected", data);
-//     let iframeBody = document.getElementsByTagName("iframe");
-//     //@ts-ignore
-//     console.log(iframeBody[0].contentWindow.document);
-//     //@ts-ignore
-//     iframeBody[0].contentWindow.document.getSelection().removeAllRanges();
-//   };

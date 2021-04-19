@@ -13,6 +13,9 @@ type props = {
   close: () => void;
   onScrollChnage: (value: boolean) => void;
   scrollValue: boolean;
+  onColorChange: (value: string) => void;
+  increaseSize: () => void;
+  decreaseSize: () => void;
 };
 
 const ConfigMenu: FunctionComponent<props> = ({
@@ -20,6 +23,9 @@ const ConfigMenu: FunctionComponent<props> = ({
   close,
   onScrollChnage,
   scrollValue,
+  onColorChange,
+  increaseSize,
+  decreaseSize,
 }) => {
   return (
     <div>
@@ -36,9 +42,15 @@ const ConfigMenu: FunctionComponent<props> = ({
         <div style={{ width: "100%" }}>
           <span className={styles.title}>Font Size</span>
           <div className={styles.fontSizeMenu}>
-            <IoRemoveCircleOutline style={{ fontSize: "24px" }} />
+            <IoRemoveCircleOutline
+              style={{ fontSize: "24px", cursor: "pointer" }}
+              onClick={decreaseSize}
+            />
             <span>Aa</span>
-            <IoAddCircleOutline style={{ fontSize: "24px" }} />
+            <IoAddCircleOutline
+              style={{ fontSize: "24px", cursor: "pointer" }}
+              onClick={increaseSize}
+            />
           </div>
         </div>
 
@@ -48,36 +60,42 @@ const ConfigMenu: FunctionComponent<props> = ({
             <div
               className={styles.colorDiv}
               style={{ backgroundColor: "#4AC6BD50", borderColor: "#4AC6BD" }}
+              onClick={() => onColorChange("#4AC6BD50")}
             >
               <span>Aa</span>
             </div>
             <div
               className={styles.colorDiv}
               style={{ backgroundColor: "#F9EA6250", borderColor: "#F9EA62" }}
+              onClick={() => onColorChange("#F9EA6250")}
             >
               <span>Aa</span>
             </div>
             <div
               className={styles.colorDiv}
               style={{ backgroundColor: "#51454550", borderColor: "#514545" }}
+              onClick={() => onColorChange("#51454550")}
             >
               <span>Aa</span>
             </div>
             <div
               className={styles.colorDiv}
               style={{ backgroundColor: "#13BA6A50", borderColor: "#13BA6A" }}
+              onClick={() => onColorChange("#13BA6A50")}
             >
               <span>Aa</span>
             </div>
             <div
               className={styles.colorDiv}
               style={{ backgroundColor: "#00000050", borderColor: "#000000" }}
+              onClick={() => onColorChange("#00000050")}
             >
               <span>Aa</span>
             </div>
             <div
               className={styles.colorDiv}
               style={{ backgroundColor: "#FE38EA50", borderColor: "#FE38EA" }}
+              onClick={() => onColorChange("#FE38EA50")}
             >
               <span>Aa</span>
             </div>

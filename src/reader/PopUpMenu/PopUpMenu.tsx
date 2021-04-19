@@ -2,15 +2,7 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
 import Modal from "react-modal";
 import styles from "./PopUpStyles.module.css";
-import {
-  IoTrash,
-  IoClose,
-  IoDocument,
-  IoPencil,
-  IoBusiness,
-  IoBook,
-  IoSearch,
-} from "react-icons/io5";
+import { IoTrash, IoClose, IoBook, IoSearch } from "react-icons/io5";
 import { FiEdit3 } from "react-icons/fi";
 
 Modal.setAppElement("#root");
