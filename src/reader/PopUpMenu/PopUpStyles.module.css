@@ -64,6 +64,7 @@
   width: 22px;
   margin: 0.3em 0em;
   border-radius: 15px;
+  cursor: pointer;
 }
 
 .IconContainer {

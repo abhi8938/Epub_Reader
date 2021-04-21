@@ -10,9 +10,15 @@ type props = {
   coord: { x: number; y: number };
   show: boolean;
   hide: () => void;
+  highlight: (color: string) => void;
 };
 
-const PopUpMenu: FunctionComponent<props> = ({ coord, show, hide }) => {
+const PopUpMenu: FunctionComponent<props> = ({
+  coord,
+  show,
+  hide,
+  highlight,
+}) => {
   const [modalType, setModalType] = useState("annSelect");
   const [showNote, setshowNote] = useState(false);
   useEffect(() => {
@@ -36,7 +42,7 @@ const PopUpMenu: FunctionComponent<props> = ({ coord, show, hide }) => {
           content: {
             position: "absolute",
             top: coord.y,
-            marginLeft: coord.x,
+            marginLeft: 200,
           },
         }}
       >
@@ -72,18 +78,22 @@ const PopUpMenu: FunctionComponent<props> = ({ coord, show, hide }) => {
                   <div
                     className={styles.Circle}
                     style={{ backgroundColor: "#F9EA62" }}
+                    onClick={() => highlight("#F9EA62")}
                   />
                   <div
                     className={styles.Circle}
                     style={{ backgroundColor: "#4AC6BD" }}
+                    onClick={() => highlight("#4AC6BD")}
                   />
                   <div
                     className={styles.Circle}
                     style={{ backgroundColor: "#FF986B" }}
+                    onClick={() => highlight("#FF986B")}
                   />
                   <div
                     className={styles.Circle}
                     style={{ backgroundColor: "#514545" }}
+                    onClick={() => highlight("#514545")}
                   />
                 </div>
 

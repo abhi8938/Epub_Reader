@@ -1,4 +1,8 @@
 //@ts-nocheck
+
+import Services from "./services";
+
+const services = new Services();
 const Handlers = () => {
   const onPress = (
     cfi: any,
@@ -77,6 +81,38 @@ const Handlers = () => {
     }
   };
 
+  const onAnnotations = (ann: []) => {
+    let data: any[] = [];
+    const annData = Object.entries(ann);
+    annData.map((item: any, index: number) => {
+      data.push({
+        type: "HIGHLIGHT",
+        pageCfi: item[1].cfiRange,
+        epubCfi: item[1].cfiRange,
+        color: item[1].styles.fill,
+        text: item[1].data.text,
+      });
+      return true;
+    });
+    console.log("data", data);
+    services
+      .updateAnnotations(data)
+      .then((resp) => {
+        console.log(resp);
+      })
+      .catch((error) => console.log("update ann error", error));
+  };
+
+  const setAnnotations = (setAnn: (data: any) => void) => {
+    services
+      .getAnn()
+      .then((response) => {
+        console.log("ann data", response.data[0].ann);
+        const annData = response.data[0].ann;
+        setAnn(annData);
+      })
+      .catch((error) => console.log("ann fetch error", error));
+  };
   return {
     onPress,
     onDblPress,
@@ -88,6 +124,8 @@ const Handlers = () => {
     onViewAdded,
     beforeViewRemoved,
     onLongPress,
+    onAnnotations,
+    setAnnotations,
   };
 };
 

@@ -1,14 +1,17 @@
 //@ts-nocheck
+
 import React, { useEffect, useRef, useState } from "react";
-import { ReactReader } from "react-reader";
+
 import AnnotationModal from "../AnnotationsModal/AnnotationsModal";
 import BottomBar from "../BottomBar/BottomBar";
-import SearchModal from "../SearchModal/SearchModal";
 import ConfigMenu from "./ConfigMenu/ConfigMenu";
 import Handlers from "./Handlers";
 import PopUpMenu from "./PopUpMenu/PopUpMenu";
-import useReaderState from "./state";
+import { ReactReader } from "react-reader";
+import SearchModal from "../SearchModal/SearchModal";
 import Topbar from "./TopBar/TopBar";
+import useReaderState from "./state";
+
 /* TO-DO
 
   1.) Save Annotations created by user
@@ -37,7 +40,7 @@ import Topbar from "./TopBar/TopBar";
 function Reader() {
   const [rendition, setRendition] = useState();
   const epubRef: any = useRef(null);
-  const { disableContextMenu } = Handlers();
+  const { disableContextMenu, onAnnotations, setAnnotations } = Handlers();
   const { handleBook } = useReaderState();
   const [coord, setCoord] = useState({ x: 0, y: 0 });
 
@@ -49,8 +52,9 @@ function Reader() {
   const [showScroll, setShowScroll] = useState(false);
   const [fontSize, setFontSize] = useState(16);
   const [color, setColor] = useState();
-  // const [contHeight, setContHeight] = useState(0);
-  // const [popHeight, setPopHeight] = useState(0);
+  const [cfi, setCfi] = useState();
+  const [annotations, setAnnotationsData] = useState(undefined);
+
   const getPosition = (e?: any) => {
     var posx = 0;
     var posy = 0;
@@ -68,7 +72,7 @@ function Reader() {
       if (!range.getClientRects) return;
       posy = range.getClientRects().item(0).y;
       posx = range.getClientRects().item(0).x;
-      console.log("x,y", posx, posy);
+      // console.log("x,y", posx, posy);
       setCoord({
         x: posx,
         y: posy + 45,
@@ -109,6 +113,45 @@ function Reader() {
     });
   };
 
+  const highlightText = (color: string) => {
+    rendition.annotations.remove(cfi, "highlight");
+    rendition.annotations.highlight(
+      cfi,
+      {
+        text: rendition.getRange(cfi).toString(),
+      },
+      (e) => {
+        console.log("annotation clicked", e);
+      },
+      "hl",
+      {
+        fill: color,
+        "fill-opacity": "0.5",
+        "mix-blend-mode": "multiply",
+      }
+    );
+    console.log("ann", rendition.annotations._annotations);
+    onAnnotations(rendition.annotations._annotations);
+  };
+
+  const showAnn = (cfi: string, text: string, color: string) => {
+    rendition.annotations.highlight(
+      cfi,
+      {
+        text,
+      },
+      (e) => {
+        console.log("annotation clicked", e);
+      },
+      "hl",
+      {
+        fill: color,
+        "fill-opacity": "0.5",
+        "mix-blend-mode": "multiply",
+      }
+    );
+  };
+
   useEffect(() => {
     if (rendition) {
       rendition.themes.fontSize(fontSize + "px");
@@ -116,6 +159,22 @@ function Reader() {
     // eslint-disable-next-line
   }, [fontSize]);
 
+  useEffect(() => {
+    if (rendition) {
+      setAnnotations((data: any) => setAnnotationsData(data));
+    }
+  }, [rendition]);
+
+  useEffect(() => {
+    if (annotations) {
+      console.log(annotations);
+      annotations.map((item: any, index: number) => {
+        console.log(item.epubCfi);
+        showAnn(item.epubCfi, item.text, item.color);
+        return true;
+      });
+    }
+  }, [annotations]);
   return (
     <>
       <ConfigMenu
@@ -140,7 +199,12 @@ function Reader() {
         onAnnotations={() => setShowAnnotation(true)}
         onSettings={() => setShowConfigMenu(true)}
       />
-      <PopUpMenu coord={coord} show={show} hide={() => setShow(false)} />
+      <PopUpMenu
+        coord={coord}
+        show={show}
+        hide={() => setShow(false)}
+        highlight={highlightText}
+      />
       <BottomBar
         color={color}
         onNext={() => epubRef.current.next()}
@@ -159,12 +223,9 @@ function Reader() {
           ref={epubRef}
           url={"https://s3.amazonaws.com/epubjs/books/moby-dick.epub"}
           handleTextSelected={(data) => {
+            setCfi(data);
             console.log("selected", data);
             getPosition();
-            let iframeBody = document.getElementsByTagName("iframe");
-            let popmenu = document.getElementById("pop_menu");
-            // setContHeight();
-            console.log("pop", popmenu, iframeBody[0]);
             setShow(true);
           }}
           locationChanged={(epubcifi: any) => {

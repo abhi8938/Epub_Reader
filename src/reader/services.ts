@@ -1,6 +1,5 @@
 //@ts-nocheck
 import axios from "axios";
-import { useEffect, useRef } from "react";
 import theme from "./Assets/theme";
 export type ann_data = {
   type: string; //'HIGHLIGHT' | 'BOOKMARK' | 'UNDERLINE' | 'EMPTY'
@@ -26,18 +25,6 @@ export type config = {
   font: string;
   color: string;
   selectActive: string;
-};
-
-export const propsDidUpdate = (callback: any, deps: any) => {
-  const hasMount = useRef(false);
-
-  useEffect(() => {
-    if (hasMount.current) {
-      callback();
-    } else {
-      hasMount.current = true;
-    }
-  }, deps);
 };
 
 export default class Services {
@@ -216,29 +203,37 @@ export default class Services {
     return content;
   }; // synchronous
 
-  updateAnnotations = async (ann: annotations) => {
+  updateAnnotations = async (ann: any[]) => {
     //TODO: send post request to backend with updated annotations
-    const token = sessionStorage.getItem("TOKEN");
     const headers = {
       "Content-Type": "application/json",
-      "auth-token": token,
+      "x-auth-token":
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDdhYzAwYjJiNTUyYzAwMjMwYTY1OWYiLCJpYXQiOjE2MTg5OTU4MDB9.XuHJTl1l-gZe9sj0btrG48PkibDNwNnrFVkJmvilhGY",
     };
     return axios
-      .post(URL + "/updateAnnotations", ann, { headers })
+      .put(
+        "http://digitalluxe.ca" + "/api/annotations/60800b6567c71717356ec777",
+        { ann },
+        { headers }
+      )
       .then((response) => response)
       .catch((error) => error);
   }; // asynchronous
 
   getAnn = () => {
-    //TODO: Call to asyncstorage to get annotations and render in highlights, bookmarks, notes
-    //* this.fetchAnnotations
-    let response = null;
-    sessionStorage.getItem(theme.ITEM_NAMES.annotations);
-    if (response === null) {
-      return [];
-    }
-    console.log("asyncstorage_err", response);
-    return [];
+    //TODO: send post request to backend with updated annotations
+    const headers = {
+      "Content-Type": "application/json",
+      "x-auth-token":
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDdhYzAwYjJiNTUyYzAwMjMwYTY1OWYiLCJpYXQiOjE2MTg5OTU4MDB9.XuHJTl1l-gZe9sj0btrG48PkibDNwNnrFVkJmvilhGY",
+    };
+    return axios
+      .get(
+        "http://digitalluxe.ca" + "/api/annotations/607f2a28978c04198bc62ed9",
+        { headers }
+      )
+      .then((response) => response)
+      .catch((error) => error);
   }; // asynchronous
 
   fetchAnnotations = async () => {
