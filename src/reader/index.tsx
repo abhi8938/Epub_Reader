@@ -11,7 +11,6 @@ import { ReactReader } from "react-reader";
 import SearchModal from "../SearchModal/SearchModal";
 import Topbar from "./TopBar/TopBar";
 import useReaderState from "./state";
-
 /* TO-DO
 
   1.) Save Annotations created by user
@@ -235,6 +234,10 @@ function Reader() {
       setBookmarkList(list);
     }
   }, [annotations]);
+
+  useEffect(() => {
+    alert(window.token);
+  }, [window]);
   return (
     <>
       <ConfigMenu
