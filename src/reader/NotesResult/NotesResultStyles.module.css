@@ -9,6 +9,7 @@
 .content {
   width: 100%;
   box-sizing: border-box;
+  cursor: pointer;
 }
 
 .header {
@@ -22,6 +23,7 @@
   width: 35px;
   border-radius: 7px;
   background-color: #feb701;
+  cursor: pointer;
 }
 
 .addNote {

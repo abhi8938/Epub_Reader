@@ -208,7 +208,7 @@ export default class Services {
     const headers = {
       "Content-Type": "application/json",
       "x-auth-token":
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDdhYzAwYjJiNTUyYzAwMjMwYTY1OWYiLCJpYXQiOjE2MTg5OTU4MDB9.XuHJTl1l-gZe9sj0btrG48PkibDNwNnrFVkJmvilhGY",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDgwMzY1MTAxMTI2ZjQ5Yjc2ZDA1MTYiLCJpYXQiOjE2MTkwMTUyNTB9.vYqi7PqvcU1Afwm3ysJwqt9Wq-bRfqrfM6pFQ9a7a1E",
     };
     return axios
       .put(
@@ -226,7 +226,7 @@ export default class Services {
     const headers = {
       "Content-Type": "application/json",
       "x-auth-token":
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDdhYzAwYjJiNTUyYzAwMjMwYTY1OWYiLCJpYXQiOjE2MTg5OTU4MDB9.XuHJTl1l-gZe9sj0btrG48PkibDNwNnrFVkJmvilhGY",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MDgwMzY1MTAxMTI2ZjQ5Yjc2ZDA1MTYiLCJpYXQiOjE2MTkwMTUyNTB9.vYqi7PqvcU1Afwm3ysJwqt9Wq-bRfqrfM6pFQ9a7a1E",
     };
     return axios
       .get(

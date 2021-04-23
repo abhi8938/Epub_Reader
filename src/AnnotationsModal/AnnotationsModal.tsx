@@ -4,18 +4,31 @@ import { IoChevronBack } from "react-icons/io5";
 import Sidebar from "react-sidebar";
 import NotesResult from "../reader/NotesResult/NotesResult";
 import BookmarkResult from "../reader/BookmarkResult/BookmarkResult";
-import { Data } from "../reader/Data";
 
 type props = {
   open: boolean;
   close: () => void;
+  annotations: any;
+  onNotesCLick: (cfi: string) => void;
+  deteleHighlight: (cfi: string) => void;
+  deteleBookmark: (cfi: string) => void;
 };
 
-const AnnotationModal: FunctionComponent<props> = ({ open, close }) => {
+const AnnotationModal: FunctionComponent<props> = ({
+  open,
+  close,
+  annotations,
+  onNotesCLick,
+  deteleHighlight,
+  deteleBookmark,
+}) => {
   const [selected, setSelected] = useState<"Notes" | "Bookmarks">("Bookmarks");
-  const { annotations } = Data();
-  const Bookmarks = annotations.filter((x: any) => x.type === "Bookmark");
-  const Notes = annotations.filter((x: any) => x.type === "Notes");
+  const highlights = annotations?.filter(
+    (item: any, index: number) => item.type === "HIGHLIGHT"
+  );
+  const bookmarks = annotations?.filter(
+    (item: any, index: number) => item.type === "BOOKMARK"
+  );
   return (
     <Sidebar
       sidebar={
@@ -27,7 +40,7 @@ const AnnotationModal: FunctionComponent<props> = ({ open, close }) => {
                 style={
                   selected === "Bookmarks"
                     ? { color: "#F3983E", fontWeight: 800 }
-                    : {}
+                    : { fontWeight: 700 }
                 }
                 className={styles.topBarButton}
                 onClick={() => setSelected("Bookmarks")}
@@ -38,7 +51,7 @@ const AnnotationModal: FunctionComponent<props> = ({ open, close }) => {
                 style={
                   selected === "Notes"
                     ? { color: "#F3983E", fontWeight: 800 }
-                    : {}
+                    : { fontWeight: 700 }
                 }
                 className={styles.topBarButton}
                 onClick={() => setSelected("Notes")}
@@ -48,16 +61,25 @@ const AnnotationModal: FunctionComponent<props> = ({ open, close }) => {
             </div>
           </div>
           <div className={styles.content}>
-            {selected === "Notes" &&
-              Notes.map((item: any, index: number) => (
-                <NotesResult key={index} text={item.text} color={item.color} />
+            {highlights &&
+              selected === "Notes" &&
+              highlights.map((item: any, index: number) => (
+                <NotesResult
+                  key={index}
+                  text={item.text}
+                  color={item.color}
+                  onPress={() => onNotesCLick(item.epubCfi)}
+                  onDelete={() => deteleHighlight(item.epubCfi)}
+                />
               ))}
-            {selected === "Bookmarks" &&
-              Bookmarks.map((item: any, index: number) => (
+            {bookmarks &&
+              selected === "Bookmarks" &&
+              bookmarks.map((item: any, index: number) => (
                 <BookmarkResult
                   key={index}
                   text={item.text}
-                  pageno={item.page}
+                  pageno={"10"}
+                  deleteBookmark={() => deteleBookmark(item.epubCfi)}
                 />
               ))}
           </div>

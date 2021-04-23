@@ -40,7 +40,12 @@ import useReaderState from "./state";
 function Reader() {
   const [rendition, setRendition] = useState();
   const epubRef: any = useRef(null);
-  const { disableContextMenu, onAnnotations, setAnnotations } = Handlers();
+  const {
+    disableContextMenu,
+    onAnnotations,
+    setAnnotations,
+    updateAnnotations,
+  } = Handlers();
   const { handleBook } = useReaderState();
   const [coord, setCoord] = useState({ x: 0, y: 0 });
 
@@ -53,7 +58,9 @@ function Reader() {
   const [fontSize, setFontSize] = useState(16);
   const [color, setColor] = useState();
   const [cfi, setCfi] = useState();
+  const [pageCfi, setPageCfi] = useState();
   const [annotations, setAnnotationsData] = useState(undefined);
+  const [bookmarkList, setBookmarkList] = useState([]);
 
   const getPosition = (e?: any) => {
     var posx = 0;
@@ -113,6 +120,14 @@ function Reader() {
     });
   };
 
+  const deleteHighlight = (epubcfi: string) => {
+    rendition.annotations.remove(epubcfi, "highlight");
+    let data = [...annotations];
+    data = data.filter((item: any, index: number) => item.epubCfi !== epubcfi);
+    setAnnotationsData(data);
+    updateAnnotations(data);
+  };
+
   const highlightText = (color: string) => {
     rendition.annotations.remove(cfi, "highlight");
     rendition.annotations.highlight(
@@ -132,6 +147,42 @@ function Reader() {
     );
     console.log("ann", rendition.annotations._annotations);
     onAnnotations(rendition.annotations._annotations);
+    let data = [];
+    const annData = Object.entries(rendition.annotations._annotations);
+    annData.map((item: any, index: number) => {
+      data.push({
+        type: "HIGHLIGHT",
+        pageCfi: item[1].cfiRange,
+        epubCfi: item[1].cfiRange,
+        color: item[1].styles.fill,
+        text: item[1].data.text,
+      });
+      return true;
+    });
+    setAnnotationsData(data);
+  };
+
+  const onBookMark = () => {
+    let data = [...annotations];
+    data.push({
+      type: "BOOKMARK",
+      pageCfi: pageCfi,
+      epubCfi: pageCfi,
+      color: "#000",
+      text: rendition
+        .getRange(pageCfi.slice(0, -5) + ",/1:0,/1:10)")
+        .toString(),
+    });
+    setAnnotationsData(data);
+    updateAnnotations(data);
+  };
+
+  const onBookMarkDelete = (pagecfi: string) => {
+    const data = annotations.filter(
+      (item: any, index: number) => item.epubCfi !== pageCfi
+    );
+    setAnnotationsData(data);
+    updateAnnotations(data);
   };
 
   const showAnn = (cfi: string, text: string, color: string) => {
@@ -161,21 +212,28 @@ function Reader() {
 
   useEffect(() => {
     if (rendition) {
-      setAnnotations((data: any) => setAnnotationsData(data));
+      setAnnotations((data: any) => {
+        setAnnotationsData(data);
+        data.map((item: any, index: number) => {
+          showAnn(item.epubCfi, item.text, item.color);
+          return true;
+        });
+      });
     }
     // eslint-disable-next-line
   }, [rendition]);
 
   useEffect(() => {
     if (annotations) {
-      console.log(annotations);
-      annotations.map((item: any, index: number) => {
-        console.log(item.epubCfi);
-        showAnn(item.epubCfi, item.text, item.color);
+      let list = [];
+      annotations?.map((item: any, index: number) => {
+        if (item.type === "BOOKMARK") {
+          list.push(item.pageCfi);
+        }
         return true;
       });
+      setBookmarkList(list);
     }
-    // eslint-disable-next-line
   }, [annotations]);
   return (
     <>
@@ -192,6 +250,10 @@ function Reader() {
       <AnnotationModal
         open={showAnnotation}
         close={() => setShowAnnotation(false)}
+        annotations={annotations}
+        onNotesCLick={(epubcfi) => rendition.display(epubcfi)}
+        deteleHighlight={deleteHighlight}
+        deteleBookmark={onBookMarkDelete}
       />
       <Topbar
         shown={true}
@@ -200,6 +262,8 @@ function Reader() {
         onSearch={() => setShowSideBar(true)}
         onAnnotations={() => setShowAnnotation(true)}
         onSettings={() => setShowConfigMenu(true)}
+        onBookMark={onBookMark}
+        isMarked={bookmarkList.includes(pageCfi)}
       />
       <PopUpMenu
         coord={coord}
@@ -230,8 +294,9 @@ function Reader() {
             getPosition();
             setShow(true);
           }}
-          locationChanged={(epubcifi: any) => {
+          locationChanged={(cfi: any) => {
             disableContextMenu();
+            setPageCfi(cfi);
           }}
           epubOptions={{
             manager: "continuous",

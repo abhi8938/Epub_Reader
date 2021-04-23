@@ -6,14 +6,22 @@ import { IoTrash } from "react-icons/io5";
 type props = {
   text: string;
   pageno: string;
+  deleteBookmark: () => void;
 };
 
-const BookmarkResult: FunctionComponent<props> = ({ text, pageno }) => {
+const BookmarkResult: FunctionComponent<props> = ({
+  text,
+  pageno,
+  deleteBookmark,
+}) => {
   return (
     <div className={styles.parent}>
       <p className={styles.content}>{text}</p>
       <p className={styles.page}>{pageno}</p>
-      <IoTrash style={{ marginRight: "10px", fontSize: 18 }} />
+      <IoTrash
+        style={{ marginRight: "10px", fontSize: 18, cursor: "pointer" }}
+        onClick={deleteBookmark}
+      />
     </div>
   );
 };

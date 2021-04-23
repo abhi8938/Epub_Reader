@@ -103,17 +103,32 @@ const Handlers = () => {
       .catch((error) => console.log("update ann error", error));
   };
 
+  const updateAnnotations = (ann: []) => {
+    services
+      .updateAnnotations(ann)
+      .then((resp) => {
+        console.log(resp);
+      })
+      .catch((error) => console.log("update ann error", error));
+  };
+
   const setAnnotations = (setAnn: (data: any) => void) => {
     services
       .getAnn()
       .then((response) => {
-        console.log("ann data", response.data[0].ann);
-        const annData = response.data[0].ann;
+        const annData = response.data.ann;
+        let data = [];
+        annData.map((item: any, index: number) => {
+          delete item._id;
+          data.push(item);
+          return true;
+        });
         setAnn(annData);
       })
       .catch((error) => console.log("ann fetch error", error));
   };
   return {
+    updateAnnotations,
     onPress,
     onDblPress,
     onError,

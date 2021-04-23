@@ -9,6 +9,7 @@ import {
   IoBookmarkOutline,
   IoSearchOutline,
   IoDocumentTextOutline,
+  IoBookmark,
 } from "react-icons/io5";
 //@ts-nocheck
 // //FUNCTION TO CHECK FOE PROPS UPDATE
@@ -28,10 +29,11 @@ type props = {
   bg: string;
   shown: boolean;
   title: string;
-  onBookMark?: any;
+  onBookMark?: () => void;
   onAnnotations?: () => void;
   onSearch?: () => void;
   onSettings: () => void;
+  isMarked: boolean;
 };
 const Topbar: FunctionComponent<props> = ({
   bg,
@@ -41,11 +43,15 @@ const Topbar: FunctionComponent<props> = ({
   onAnnotations,
   onSearch,
   onSettings,
+  isMarked,
 }) => {
   return (
     <div className={styles.parent}>
       <div className={styles.menu}>
-        <IoBookmarkOutline className={styles.icon} />
+        {isMarked === true && <IoBookmark className={styles.icon} />}
+        {isMarked === false && (
+          <IoBookmarkOutline className={styles.icon} onClick={onBookMark} />
+        )}
         <IoSearchOutline className={styles.icon} onClick={onSearch} />
         <IoDocumentTextOutline
           className={styles.icon}
