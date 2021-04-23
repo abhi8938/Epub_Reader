@@ -212,6 +212,7 @@ export default class Services {
     };
     return axios
       .put(
+        // eslint-disable-next-line
         "http://digitalluxe.ca" + "/api/annotations/60800b6567c71717356ec777",
         { ann },
         { headers }
@@ -229,6 +230,7 @@ export default class Services {
     };
     return axios
       .get(
+        // eslint-disable-next-line
         "http://digitalluxe.ca" + "/api/annotations/607f2a28978c04198bc62ed9",
         { headers }
       )
@@ -270,14 +272,14 @@ export default class Services {
     return new_ann;
   }; // synchronous
 
-  existsAnn = (ann: annotations, data: ann_data | string) => {
-    //TODO: check if exists in ann by comparing epubcfi - if yes return index or return false
-    let new_ann = ann;
-    const result = new_ann.findIndex((item, index) => {
-      return item === data;
-    });
-    return -1;
-  }; // synchronous
+  // existsAnn = (ann: annotations, data: ann_data | string) => {
+  //   //TODO: check if exists in ann by comparing epubcfi - if yes return index or return false
+  //   let new_ann = ann;
+  //   const result = new_ann.findIndex((item, index) => {
+  //     return item === data;
+  //   });
+  //   return -1;
+  // }; // synchronous
 
   goPrev(webview: any) {
     webview.current?.injectJavaScript(`window.rendition.prev()`);

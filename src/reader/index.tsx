@@ -163,6 +163,7 @@ function Reader() {
     if (rendition) {
       setAnnotations((data: any) => setAnnotationsData(data));
     }
+    // eslint-disable-next-line
   }, [rendition]);
 
   useEffect(() => {
@@ -174,6 +175,7 @@ function Reader() {
         return true;
       });
     }
+    // eslint-disable-next-line
   }, [annotations]);
   return (
     <>
