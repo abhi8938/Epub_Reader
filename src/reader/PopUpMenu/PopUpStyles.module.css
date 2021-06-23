@@ -15,15 +15,27 @@
   z-index: 2;
   background-color: rgba(0, 0, 0, 0);
 }
-
-.menuContainer {
-  padding: 0px 5px;
+.pencilHead {
+  height: 1.5vh;
+  width: 100%;
+  background-color: #808080;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
 }
 
+.pencilHeadBottom {
+  height: 1.5vh;
+  width: 100%;
+  background-color: #808080;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
 .annotationMenu {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
+  background-color: #ccc;
+  box-shadow: 0 4px 8px 0 rgba(73, 53, 53, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
 }
 
 .buttons {
@@ -35,20 +47,50 @@
   background-color: transparent;
 }
 
+.annotationContainer {
+}
+
 .line {
-  height: inherit;
   height: 1px;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.9);
 }
 
 .triangle {
-  /* margin: auto; */
-  margin-top: 10px;
-  width: 0;
-  height: 0;
-  border-left: 8px solid #cccccc;
-  border-top: 6px solid transparent;
-  border-bottom: 6px solid transparent;
+  box-shadow: 0 4px 8px 0 rgba(73, 53, 53, 0.4), 0 6px 0px 0 rgba(0, 0, 0, 0.3);
+
+  display: flex;
+  position: relative;
+  align-self: center;
+  background-color: #808080;
+  text-align: left;
+  margin-top: 6px;
+  transition: all 400ms;
+  opacity: 1;
+}
+.triangle:before,
+.triangle:after {
+  content: "";
+  position: absolute;
+  background-color: inherit;
+  background-color: #a9a9a9;
+}
+.triangle,
+.triangle:before,
+.triangle:after {
+  width: 1.1em;
+  height: 1.1em;
+  border-top-right-radius: 30%;
+}
+
+.triangle {
+  transform: rotate(120deg) skewX(-30deg) scale(1, 0.866);
+}
+.triangle:before {
+  transform: rotate(-135deg) skewX(-45deg) scale(1.414, 0.707)
+    translate(0, -50%);
+}
+.triangle:after {
+  transform: rotate(135deg) skewY(-45deg) scale(0.707, 1.414) translate(50%);
 }
 
 .CircleContainer {
@@ -56,7 +98,9 @@
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  padding: 0.5em 0em;
+  padding: 0.2em 0em;
+  background-color: #a9a9a9;
+  box-shadow: 0 4px 8px 0 rgba(73, 53, 53, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
 }
 
 .Circle {
@@ -65,6 +109,12 @@
   margin: 0.3em 0em;
   border-radius: 15px;
   cursor: pointer;
+  opacity: 1;
+  transition: all 400ms;
+  cursor: pointer;
+}
+.Circle:hover {
+  opacity: 0.3;
 }
 
 .IconContainer {
@@ -83,63 +133,19 @@
 .popup {
 }
 
-.noteDiv {
-  height: 22vh;
-  width: 100%;
-  background-color: white;
-  border: solid #808080 0.2px;
-  border-radius: 5px;
-}
 .selectable {
   display: flex;
   padding: 1em 0.4em;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  /* border-top-left-radius: 5px;
+  border-top-right-radius: 5px; */
+  transition: all 400ms;
+  opacity: 1;
+  cursor: pointer;
+  background-color: #a9a9a9;
 }
-.noteHeader {
-  display: flex;
-  padding: 0px 5%;
-  justify-content: space-between;
-  height: 22%;
-  align-items: center;
-  border-bottom: solid #cccccc 3px;
-}
-
-.closeIcon {
-  font-size: 18px;
-}
-.noteHeading {
-  font-weight: 600;
-  font-size: 18px;
-}
-
-.noteInput {
-  height: 55%;
-  width: 100%;
-  padding: 0px;
-  margin: 0px;
-  resize: none;
-  padding: 2% 2%;
-  box-sizing: border-box;
-  outline: none;
-  border: none;
-  font-size: 15px;
-}
-
-.noteButtonDiv {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  padding: 0px 2%;
-  align-items: center;
-}
-
-.noteButton {
-  display: inline-block;
-  margin-left: 10px;
-  outline: transparent;
-  border: transparent;
-  background-color: transparent;
-  font-weight: bold;
+.selectable:hover {
+  background-color: #a9a9a912;
 }

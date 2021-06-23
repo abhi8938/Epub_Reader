@@ -7,12 +7,10 @@
   display: flex;
   width: 100vw;
   padding: 5px 30px;
-  background-color: white;
 }
 .menu {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
   margin: auto auto;
   width: 100vw;
@@ -20,5 +18,5 @@
 }
 .icon {
   font-size: 28px;
-  color: #808080;
+  cursor: pointer;
 }

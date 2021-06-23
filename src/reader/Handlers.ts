@@ -13,19 +13,6 @@ const Handlers = () => {
     toggleBars();
   };
 
-  const onLongPress = (cfi: any, rendition: any) => {};
-
-  const onDblPress = (
-    cfi: any,
-    position: any,
-    imgSrc: any,
-    rendition: any
-  ) => {};
-
-  const onViewAdded = (index: any) => {};
-
-  const beforeViewRemoved = (index: any) => {};
-
   const onSelected = (
     cfiRange: any,
     setSelected: any,
@@ -56,15 +43,6 @@ const Handlers = () => {
     });
   };
 
-  const onReady = (
-    book: any,
-    handleBook: (key: string, value: any) => void
-  ) => {
-    handleBook("book", book);
-  };
-
-  const onError = (message: any) => {};
-
   const disableContextMenu = (timeout: any) => {
     let iframeBody = document.getElementsByTagName("iframe");
     for (var i = 0, len = iframeBody.length; i < len; i++) {
@@ -73,7 +51,6 @@ const Handlers = () => {
         "contextmenu",
         function (e) {
           e.preventDefault();
-          console.log("event", e);
           e.stopPropagation();
         },
         false
@@ -127,18 +104,13 @@ const Handlers = () => {
       })
       .catch((error) => console.log("ann fetch error", error));
   };
+
   return {
     updateAnnotations,
     onPress,
-    onDblPress,
-    onError,
-    onReady,
     disableContextMenu,
     onMarkClicked,
     onSelected,
-    onViewAdded,
-    beforeViewRemoved,
-    onLongPress,
     onAnnotations,
     setAnnotations,
   };

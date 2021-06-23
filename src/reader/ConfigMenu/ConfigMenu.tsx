@@ -1,24 +1,31 @@
-import React, { FunctionComponent } from "react";
-import Modal from "react-modal";
-import styles from "./ConfigMenu.module.css";
 import {
   IoAddCircleOutline,
   IoRemoveCircleOutline,
   IoSunny,
   IoSunnyOutline,
 } from "react-icons/io5";
+import React, { FunctionComponent } from "react";
+
+import Modal from "react-modal";
+import styles from "./ConfigMenu.module.css";
 
 type props = {
+  color: string;
+  bg: string;
   open: boolean;
   close: () => void;
   onScrollChnage: (value: boolean) => void;
   scrollValue: boolean;
-  onColorChange: (value: string) => void;
+  onColorChange: (value: string, bg: string) => void;
   increaseSize: () => void;
   decreaseSize: () => void;
+  onNightMode: (value: boolean, color: string, bg: string) => void;
+  nightMode: boolean;
 };
 
 const ConfigMenu: FunctionComponent<props> = ({
+  color,
+  bg,
   open,
   close,
   onScrollChnage,
@@ -26,11 +33,18 @@ const ConfigMenu: FunctionComponent<props> = ({
   onColorChange,
   increaseSize,
   decreaseSize,
+  onNightMode,
+  nightMode,
 }) => {
   return (
     <div>
       <Modal
         isOpen={open}
+        style={{
+          content: {
+            backgroundColor: `${bg}`,
+          },
+        }}
         className={styles.Modal}
         contentLabel="Example Modal"
         overlayClassName={styles.Overlay}
@@ -39,70 +53,104 @@ const ConfigMenu: FunctionComponent<props> = ({
           close();
         }}
       >
-        <div style={{ width: "100%" }}>
-          <span className={styles.title}>Font Size</span>
+        <div
+          style={{
+            padding: "5px",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <span className={styles.title} style={{ color }}>
+            Font Size
+          </span>
           <div className={styles.fontSizeMenu}>
             <IoRemoveCircleOutline
-              style={{ fontSize: "24px", cursor: "pointer" }}
+              style={{ color }}
+              className={styles.icon}
               onClick={decreaseSize}
             />
-            <span>Aa</span>
+            <span style={{ color }}>Aa</span>
             <IoAddCircleOutline
-              style={{ fontSize: "24px", cursor: "pointer" }}
+              style={{ color }}
+              className={styles.icon}
               onClick={increaseSize}
             />
           </div>
         </div>
-
-        <div style={{ width: "100%", marginTop: "20px" }}>
-          <span className={styles.title}>Color</span>
+        <span className={styles.line} style={{ color }} />
+        <div
+          style={{
+            width: "100%",
+            padding: "5px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
+          <span className={styles.title} style={{ color }}>
+            Theme
+          </span>
           <div className={styles.ColorMenu}>
             <div
               className={styles.colorDiv}
-              style={{ backgroundColor: "#4AC6BD50", borderColor: "#4AC6BD" }}
-              onClick={() => onColorChange("#4AC6BD50")}
+              style={{ backgroundColor: "#3D3D3D", borderColor: "#3D3D3D" }}
+              onClick={() => onColorChange("#ffffff", "#3D3D3D")}
             >
-              <span>Aa</span>
+              <span
+                style={{
+                  color: "#FFFFFF",
+                }}
+                className={styles.colorText}
+              >
+                Aa
+              </span>
             </div>
             <div
               className={styles.colorDiv}
-              style={{ backgroundColor: "#F9EA6250", borderColor: "#F9EA62" }}
-              onClick={() => onColorChange("#F9EA6250")}
+              style={{ backgroundColor: "#AAAAAA", borderColor: "#AAAAAA" }}
+              onClick={() => onColorChange("#000000", "#AAAAAA")}
             >
-              <span>Aa</span>
+              <span className={styles.colorText} style={{ color: "#000000" }}>
+                Aa
+              </span>
             </div>
             <div
               className={styles.colorDiv}
-              style={{ backgroundColor: "#51454550", borderColor: "#514545" }}
-              onClick={() => onColorChange("#51454550")}
+              style={{ backgroundColor: "#EFE0B9", borderColor: "#EFE0B9" }}
+              onClick={() => onColorChange("#3D3D3D", "#EFE0B9")}
             >
-              <span>Aa</span>
+              <span
+                style={{
+                  color: "#3D3D3D",
+                }}
+                className={styles.colorText}
+              >
+                Aa
+              </span>
             </div>
             <div
               className={styles.colorDiv}
-              style={{ backgroundColor: "#13BA6A50", borderColor: "#13BA6A" }}
-              onClick={() => onColorChange("#13BA6A50")}
+              style={{
+                backgroundColor: "#C0C0C0",
+                borderColor: "#c0c0c0",
+              }}
+              onClick={() => onColorChange("#3D3D3D", "#C0C0C0")}
             >
-              <span>Aa</span>
-            </div>
-            <div
-              className={styles.colorDiv}
-              style={{ backgroundColor: "#00000050", borderColor: "#000000" }}
-              onClick={() => onColorChange("#00000050")}
-            >
-              <span>Aa</span>
-            </div>
-            <div
-              className={styles.colorDiv}
-              style={{ backgroundColor: "#FE38EA50", borderColor: "#FE38EA" }}
-              onClick={() => onColorChange("#FE38EA50")}
-            >
-              <span>Aa</span>
+              <span
+                style={{
+                  color: "#3D3D3D",
+                }}
+                className={styles.colorText}
+              >
+                Aa
+              </span>
             </div>
           </div>
         </div>
-
-        <div style={{ width: "100%", marginTop: "20px" }}>
+        <span className={styles.line} style={{ color }} />
+        {/* <div style={{ width: "100%", marginTop: "20px" }}>
           <span className={styles.title}>Brightness</span>
           <div className={styles.BrightnessMenu}>
             <IoSunnyOutline style={{ fontSize: "12px" }} />
@@ -115,19 +163,53 @@ const ConfigMenu: FunctionComponent<props> = ({
             />
             <IoSunny style={{ fontSize: "12px" }} />
           </div>
+        </div> */}
+        <div
+          style={{
+            width: "100%",
+            padding: "5px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
+          <div className={styles.ScrollMenu}>
+            <span className={styles.title} style={{ color }}>
+              Night Mode
+            </span>
+            <label className={styles.switch}>
+              <input
+                type="checkbox"
+                checked={nightMode}
+                onChange={(event) =>
+                  onNightMode(event.target.checked, "#000000", "#AAAAAA")
+                }
+              />
+              <span className={styles.sliderRound} style={{ color }}></span>
+            </label>
+          </div>
         </div>
 
-        <div style={{ width: "100%", marginTop: "20px" }}>
-          <span className={styles.title}>Scroll Direction</span>
+        <div
+          style={{
+            width: "100%",
+            padding: "5px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
           <div className={styles.ScrollMenu}>
-            <span>Scrollable</span>
+            <span className={styles.title} style={{ color }}>
+              Scrollable
+            </span>
             <label className={styles.switch}>
               <input
                 type="checkbox"
                 checked={scrollValue}
                 onChange={(event) => onScrollChnage(event.target.checked)}
               />
-              <span className={styles.sliderRound}></span>
+              <span className={styles.sliderRound} style={{ color }}></span>
             </label>
           </div>
         </div>

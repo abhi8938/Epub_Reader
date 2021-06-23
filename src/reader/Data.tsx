@@ -60,6 +60,14 @@ export const Data = () => {
   ];
   const [annotations, setAnnotations] = useState(sampleAnnotation);
   const [searchData, setSearchData] = useState(sampleSearch);
+  const [toc, setTOC] = useState([]);
 
-  return { annotations, setAnnotations, searchData, setSearchData };
+  return {
+    annotations,
+    setAnnotations,
+    searchData,
+    setSearchData,
+    toc,
+    setTOC,
+  };
 };

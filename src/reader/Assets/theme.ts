@@ -44,12 +44,10 @@ const theme = {
   ],
 
   HIGHLIGHT_COLORS: [
-    { color: "#8cff32", label: "green" },
-    { color: "#abff32", label: "light" },
-    { color: "#d4ff32", label: "yellowish_green" },
-    { color: "#e9ff32", label: "light_yellow" },
-    { color: "#fdff32", label: "yellow" },
-    { color: "#fafafa", label: "grey" },
+    { color: "#FF9933", label: "green" },
+    { color: "#138808", label: "light" },
+    { color: "#808080", label: "Classic" },
+    { color: "#000080", label: "grey" },
   ],
 };
 

@@ -1,16 +1,18 @@
 //@ts-nocheck
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 
 import AnnotationModal from "../AnnotationsModal/AnnotationsModal";
 import BottomBar from "../BottomBar/BottomBar";
 import ConfigMenu from "./ConfigMenu/ConfigMenu";
-import Handlers from "./Handlers";
+import { EpubViewer } from "react-epub-viewer";
 import PopUpMenu from "./PopUpMenu/PopUpMenu";
-import { ReactReader } from "react-reader";
 import SearchModal from "../SearchModal/SearchModal";
+import TocModal from "../TocModal/TocModal";
 import Topbar from "./TopBar/TopBar";
+import spinner from "./Assets/spinner.gif";
 import useReaderState from "./state";
+
 /* TO-DO
 
   1.) Save Annotations created by user
@@ -37,54 +39,69 @@ import useReaderState from "./state";
 
 */
 function Reader() {
-  const [rendition, setRendition] = useState();
-  const epubRef: any = useRef(null);
   const {
-    disableContextMenu,
-    onAnnotations,
+    showAnn,
+    onBookMarkDelete,
+    onBookMark,
+    highlightText,
+    deleteHighlight,
+    onColorChange,
+    scroll,
+    setScroll,
     setAnnotations,
     updateAnnotations,
-  } = Handlers();
-  const { handleBook } = useReaderState();
-  const [coord, setCoord] = useState({ x: 0, y: 0 });
-
-  const [load, setLoad] = useState(true);
-  const [show, setShow] = useState(false);
-  const [showSidebar, setShowSideBar] = useState(false);
-  const [showAnnotation, setShowAnnotation] = useState(false);
-  const [showConfigMenu, setShowConfigMenu] = useState(false);
-  const [showScroll, setShowScroll] = useState(false);
-  const [fontSize, setFontSize] = useState(16);
-  const [color, setColor] = useState();
-  const [cfi, setCfi] = useState();
-  const [pageCfi, setPageCfi] = useState();
-  const [annotations, setAnnotationsData] = useState(undefined);
-  const [bookmarkList, setBookmarkList] = useState([]);
-
-  const getPosition = (e?: any) => {
-    var posx = 0;
-    var posy = 0;
-    let selection;
-    let iframeBody = document.getElementsByTagName("iframe");
-    for (var i = 0, len = iframeBody.length; i < len; i++) {
-      var doc = iframeBody[i]?.contentWindow?.document;
-      const sel = doc?.getSelection();
-      if (sel.type === "None") continue;
-      selection = sel;
-    }
-    if (selection) {
-      let range = selection.getRangeAt(0).cloneRange();
-      console.log("range", range.getClientRects());
-      if (!range.getClientRects) return;
-      posy = range.getClientRects().item(0).y;
-      posx = range.getClientRects().item(0).x;
-      // console.log("x,y", posx, posy);
-      setCoord({
-        x: posx,
-        y: posy + 45,
-      });
-    }
-  };
+    onAnnotations,
+    disableContextMenu,
+    handleConfig,
+    handleInputs,
+    handleLists,
+    handleShow,
+    rendition,
+    setRendition,
+    coord,
+    setCoord,
+    book,
+    inputs,
+    lists,
+    config,
+    show,
+    cfi,
+    handleCFI,
+    bookmarkedPages,
+    setBookmarkedPages,
+    toc,
+    setTOC,
+    setBook,
+    setLoad,
+    load,
+    handlePage,
+    page,
+    setPage,
+    setX,
+    setY,
+    onNote,
+    note,
+    updateNote,
+    y,
+    x,
+    url,
+    onSearch,
+    setUrl,
+    meanings,
+    handleMeaning,
+    handleMarked,
+    fetchMeanings,
+    marked,
+    setNote,
+    setMarked,
+    setShared,
+    sharedData,
+    setAnn,
+    annRef,
+    getPosition,
+  } = useReaderState();
+  const epubRef: any = useRef(null);
+  let rendiRef: any = useRef(null);
 
   useEffect(() => {
     if (load === false) {
@@ -94,228 +111,368 @@ function Reader() {
   }, [load]);
 
   useEffect(() => {
-    if (epubRef.current?.readerRef.current.book.isOpen === true) {
-      console.log("book", epubRef.current);
-      handleBook("book", epubRef.current?.readerRef.current.book);
-    }
-    // eslint-disable-next-line
-  }, [epubRef.current?.readerRef]);
-
-  useEffect(() => {
-    if (rendition) {
-      if (showScroll === true) {
-        rendition.flow("scrolled");
+    if (rendiRef.current) {
+      if (scroll === true) {
+        rendiRef.current.flow("scrolled");
       } else {
-        rendition.flow("paginated");
+        rendiRef.current.flow("paginated");
       }
     }
     // eslint-disable-next-line
-  }, [showScroll]);
+  }, [scroll]);
 
-  const onColorChange = (color: string) => {
-    setColor(color);
-    rendition.themes.default({
-      body: { "background-color": color },
-    });
-  };
+  useEffect(() => {
+    if (rendiRef.current) {
+      rendiRef.current.themes.fontSize(config.fontSize + "px");
+      rendiRef.current.manager.clear();
+      rendiRef.current.display(page.cfi);
+    }
+    // eslint-disable-next-line
+  }, [config.fontSize]);
 
-  const deleteHighlight = (epubcfi: string) => {
-    rendition.annotations.remove(epubcfi, "highlight");
-    let data = [...annotations];
-    data = data.filter((item: any, index: number) => item.epubCfi !== epubcfi);
-    setAnnotationsData(data);
-    updateAnnotations(data);
-  };
-
-  const highlightText = (color: string) => {
-    rendition.annotations.remove(cfi, "highlight");
-    rendition.annotations.highlight(
-      cfi,
-      {
-        text: rendition.getRange(cfi).toString(),
-      },
-      (e) => {
-        console.log("annotation clicked", e);
-      },
-      "hl",
-      {
-        fill: color,
-        "fill-opacity": "0.5",
-        "mix-blend-mode": "multiply",
-      }
-    );
-    console.log("ann", rendition.annotations._annotations);
-    onAnnotations(rendition.annotations._annotations);
-    let data = [];
-    const annData = Object.entries(rendition.annotations._annotations);
-    annData.map((item: any, index: number) => {
-      data.push({
-        type: "HIGHLIGHT",
-        pageCfi: item[1].cfiRange,
-        epubCfi: item[1].cfiRange,
-        color: item[1].styles.fill,
-        text: item[1].data.text,
+  useEffect(() => {
+    if (rendiRef.current) {
+      const windy: any = window;
+      rendiRef.current.themes.default({
+        body: { color: config.color },
       });
-      return true;
-    });
-    setAnnotationsData(data);
-  };
-
-  const onBookMark = () => {
-    let data = [...annotations];
-    data.push({
-      type: "BOOKMARK",
-      pageCfi: pageCfi,
-      epubCfi: pageCfi,
-      color: "#000",
-      text: rendition
-        .getRange(pageCfi.slice(0, -5) + ",/1:0,/1:10)")
-        .toString(),
-    });
-    setAnnotationsData(data);
-    updateAnnotations(data);
-  };
-
-  const onBookMarkDelete = (pagecfi: string) => {
-    const data = annotations.filter(
-      (item: any, index: number) => item.epubCfi !== pageCfi
-    );
-    setAnnotationsData(data);
-    updateAnnotations(data);
-  };
-
-  const showAnn = (cfi: string, text: string, color: string) => {
-    rendition.annotations.highlight(
-      cfi,
-      {
-        text,
-      },
-      (e) => {
-        console.log("annotation clicked", e);
-      },
-      "hl",
-      {
-        fill: color,
-        "fill-opacity": "0.5",
-        "mix-blend-mode": "multiply",
-      }
-    );
-  };
-
-  useEffect(() => {
-    if (rendition) {
-      rendition.themes.fontSize(fontSize + "px");
+      const background = {
+        type: "BACKGROUND",
+        value: config.bg,
+      };
+      windy.ReactNativeWebView &&
+        windy.ReactNativeWebView.postMessage(JSON.stringify(background));
     }
     // eslint-disable-next-line
-  }, [fontSize]);
+  }, [config]);
 
   useEffect(() => {
-    if (rendition) {
-      setAnnotations((data: any) => {
-        setAnnotationsData(data);
-        data.map((item: any, index: number) => {
-          showAnn(item.epubCfi, item.text, item.color);
-          return true;
-        });
-      });
-    }
-    // eslint-disable-next-line
-  }, [rendition]);
-
-  useEffect(() => {
-    if (annotations) {
+    if (lists.annotations) {
       let list = [];
-      annotations?.map((item: any, index: number) => {
+
+      lists.annotations?.map((item: any, index: number) => {
         if (item.type === "BOOKMARK") {
-          list.push(item.pageCfi);
+          list.push(parseInt(item.pageNumber));
         }
         return true;
       });
-      setBookmarkList(list);
+      setBookmarkedPages(list);
     }
-  }, [annotations]);
+  }, [lists.annotations]);
 
   useEffect(() => {
-    alert(window.token);
-  }, [window]);
+    if (rendiRef.current) {
+      rendiRef.current.on("selected", (cfiRange, content) => {
+        getPosition();
+        let newCfi = handleMarked(cfiRange, rendiRef.current, annRef.current);
+        if (newCfi !== null) {
+          handleCFI("range", newCfi);
+        } else {
+          handleCFI("range", cfiRange);
+        }
+        content.window.getSelection().removeAllRanges();
+      });
+
+      rendiRef.current.on("relocated", function (location) {
+        // var percent = book.locations.percentageFromCfi(location.start.cfi);
+
+        let current = location.start.displayed.page;
+        let total = location.end.displayed.total;
+        var percentage = Math.floor((current / total) * 100);
+        setPage({
+          current:
+            location.atEnd === true
+              ? location.end.displayed.page
+              : location.start.displayed.page,
+          total: location.end.displayed.total,
+          cfi: location.start.cfi,
+          percentage: location.atEnd === true ? "the end" : percentage,
+        });
+      });
+
+      rendiRef.current.on("markClicked", (_cfi, data, content) => {
+        let selection = content.document.getSelection();
+        let range = selection.getRangeAt(0).cloneRange();
+        if (!range.getClientRects) return;
+        let posy = range.getClientRects().item(0).y;
+        let posx = range.getClientRects().item(0).x;
+        setMarked(true);
+        handleCFI("range", _cfi);
+        let x = posx > window.innerWidth ? posx % window.innerWidth : posx;
+        setX(x);
+        setY(posy + 30);
+        handleShow("popup", true);
+      });
+
+      if (window.URI && window.token && window.paper) {
+        setShared({
+          token: window.token,
+          paper: window.paper,
+          annotation: "",
+        });
+        setAnnotations(window.token, window.paper, rendiRef.current);
+      }
+    }
+  }, [rendiRef.current]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (window.URI && window.token && window.paper) {
+        setUrl(window.URI);
+      }
+    }, 300);
+  }, []);
+
   return (
-    <>
+    <div
+      style={{
+        backgroundColor: `${config.bg}50`,
+        width: "100vw",
+        height: "94vh",
+      }}
+    >
       <ConfigMenu
-        open={showConfigMenu}
-        close={() => setShowConfigMenu(false)}
-        onScrollChnage={(value: boolean) => setShowScroll(value)}
-        scrollValue={showScroll}
-        onColorChange={onColorChange}
-        increaseSize={() => setFontSize(fontSize + 2)}
-        decreaseSize={() => setFontSize(fontSize - 2)}
-      />
-      <SearchModal open={showSidebar} close={() => setShowSideBar(false)} />
-      <AnnotationModal
-        open={showAnnotation}
-        close={() => setShowAnnotation(false)}
-        annotations={annotations}
-        onNotesCLick={(epubcfi) => rendition.display(epubcfi)}
-        deteleHighlight={deleteHighlight}
-        deteleBookmark={onBookMarkDelete}
-      />
-      <Topbar
-        shown={true}
-        title={"Text Top bar"}
-        bg={"#CCCCCC"}
-        onSearch={() => setShowSideBar(true)}
-        onAnnotations={() => setShowAnnotation(true)}
-        onSettings={() => setShowConfigMenu(true)}
-        onBookMark={onBookMark}
-        isMarked={bookmarkList.includes(pageCfi)}
-      />
-      <PopUpMenu
-        coord={coord}
-        show={show}
-        hide={() => setShow(false)}
-        highlight={highlightText}
-      />
-      <BottomBar
-        color={color}
-        onNext={() => epubRef.current.next()}
-        onPrev={() => epubRef.current.prev()}
-      />
-      <div
-        style={{
-          position: "relative",
-          height: "100vh",
-          width: "100vw",
-          boxSizing: "border-box",
-          paddingBottom: "50px",
+        color={config.color}
+        bg={config.bg}
+        nightMode={show.nightMode}
+        open={show.config}
+        close={() => handleShow("config", false)}
+        onScrollChnage={(value: boolean) => setScroll(value)}
+        scrollValue={scroll}
+        onColorChange={(color, bg) => {
+          if (bg !== "#000000") {
+            handleShow("nightMode", false);
+          }
+          onColorChange(color, bg);
         }}
-      >
-        <ReactReader
+        increaseSize={() =>
+          config.fontSize <= 24 && handleConfig("fontSize", config.fontSize + 2)
+        }
+        decreaseSize={() =>
+          config.fontSize >= 16 && handleConfig("fontSize", config.fontSize - 2)
+        }
+        onNightMode={(value, color, bg) => {
+          handleShow("nightMode", value);
+          if (value === true) {
+            onColorChange(color, bg);
+          } else {
+            onColorChange("#000000", "#ffffff");
+          }
+        }}
+      />
+      <SearchModal
+        color={config.color}
+        bg={`${config.bg}50`}
+        handleClick={(_cfi) => {
+          rendiRef.current.annotations.underline(
+            _cfi,
+            {
+              text: rendiRef.current.getRange(_cfi).toString(),
+            },
+            (e: any) => {
+              console.log("marked successfully", e);
+            },
+            "hl",
+            {
+              "text-decoration": "underline",
+              "text-decoration-color": "red",
+            }
+          );
+          rendiRef.current.display(_cfi);
+          handleShow("search", false);
+          setTimeout(() => {
+            rendiRef.current.annotations.remove(_cfi, "underline");
+          }, 3000);
+        }}
+        query={inputs.search}
+        results={lists.search}
+        onSearch={(query) => {
+          onSearch(query, book);
+        }}
+        open={show.search}
+        close={() => handleShow("search", false)}
+        handleQuery={(query) => {
+          handleLists("search", []);
+          handleInputs("search", query);
+        }}
+      />
+      <AnnotationModal
+        color={config.color}
+        bg={config.bg}
+        handleBookmark={(cfi) => {
+          rendiRef.current.display(cfi);
+          handleShow("annotation", false);
+        }}
+        open={show.annotation}
+        close={() => handleShow("annotation", false)}
+        annotations={lists.annotations}
+        onNotesCLick={(epubcfi) => {
+          rendiRef.current.display(epubcfi);
+          handleShow("annotation", false);
+        }}
+        deleteBookmark={onBookMarkDelete}
+        deleteHighlight={(cfi) => deleteHighlight(cfi, rendiRef.current)}
+        handleNote={(epubCFI, note) =>
+          updateNote(epubCFI, note, rendiRef.current)
+        }
+      />
+
+      <PopUpMenu
+        color={config.color}
+        bg={`${config.bg}50`}
+        marked={marked}
+        onSearchPress={() => {
+          let searchText = rendiRef.current.getRange(cfi.range).toString();
+          handleInputs("search", searchText);
+          handleShow("search", true);
+          onSearch(searchText, book);
+        }}
+        coord={{ x: x, y: y }}
+        show={show.popup}
+        hide={() => {
+          handleMeaning("english", {
+            word: "",
+            prounciation: "",
+            definition: "",
+            example: "",
+            synonyms: [],
+          });
+          handleShow("popup", false);
+          setMarked(false);
+          setNote("");
+          setX(0);
+          setY(0);
+        }}
+        highlight={(color) => highlightText(color, rendiRef.current)}
+        note={note}
+        onNote={(note) => onNote(note, rendiRef.current)}
+        onDeleteNote={() => {
+          updateNote(cfi.range, "", rendiRef.current);
+        }}
+        meanings={meanings}
+        deleteHighlight={() => {
+          deleteHighlight(cfi.range, rendiRef.current);
+          handleShow("popup", false);
+        }}
+        onMeaning={() => {
+          let meaningText = rendiRef.current.getRange(cfi.range).toString();
+          fetchMeanings(meaningText);
+        }}
+      />
+
+      <TocModal
+        color={config.color}
+        bg={`${config.bg}50`}
+        show={show.toc}
+        toggle={() => handleShow("toc", false)}
+        toc={toc}
+        handleClick={(href) => {
+          rendiRef.current.display(href);
+          handleShow("toc", false);
+        }}
+      />
+      <div>
+        <Topbar
+          bg={`${config.bg}`}
+          color={config.color}
+          shown={true}
+          title={"Text Top bar"}
+          onSearch={() => handleShow("search", true)}
+          onAnnotations={() => handleShow("annotation", true)}
+          onSettings={() => handleShow("config", true)}
+          onBookMark={() => onBookMark(rendiRef.current)}
+          isMarked={bookmarkedPages.includes(page.current)}
+          onToc={() => handleShow("toc", true)}
+          scroll={scroll}
+          onBookMarkDelete={() => onBookMarkDelete(page.current)}
+        />
+        <EpubViewer
+          url={url}
           ref={epubRef}
-          url={"https://s3.amazonaws.com/epubjs/books/moby-dick.epub"}
-          handleTextSelected={(data) => {
-            setCfi(data);
-            console.log("selected", data);
-            getPosition();
-            setShow(true);
-          }}
-          locationChanged={(cfi: any) => {
+          style={{ height: "85vh", marginTop: "6vh" }}
+          pageChanged={(page) => {
             disableContextMenu();
-            setPageCfi(cfi);
+            let windy: any = window;
+            const LOAD_FALSE = "LOAD_FALSE";
+            windy.ReactNativeWebView &&
+              windy.ReactNativeWebView.postMessage(
+                JSON.stringify({ type: LOAD_FALSE })
+              );
           }}
-          epubOptions={{
-            manager: "continuous",
-            flow: "paginated",
-          }}
-          tocChanged={(data: any) => {
+          tocChanged={(toc) => {
+            setTOC(toc);
             setLoad(false);
           }}
-          getRendition={(data: any) => {
-            setRendition(data);
-            console.log("rendition", data);
+          bookChanged={(book) => {
+            setBook(book);
           }}
+          epubOptions={{
+            resizeOnOrientationChange: true,
+            spread: "auto",
+            flow: "paginated",
+          }}
+          rendtionChanged={(rendition) => {
+            console.log("rendi", rendition);
+            rendiRef.current = rendition;
+            setRendition(rendition);
+          }}
+          loadingView={
+            <div
+              style={{
+                height: "95vh",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <img
+                style={{
+                  width: "70px",
+                  height: "70px",
+                  aspectRatio: "1:1",
+                }}
+                src={spinner}
+                alt="loading..."
+              />
+            </div>
+          }
+        />
+        <BottomBar
+          color={config.color}
+          bg={`${config.bg}`}
+          onNext={() => rendiRef.current && rendiRef.current.next()}
+          onPrev={() => rendiRef.current && rendiRef.current.prev()}
+          page={{
+            current: page.current,
+            total: page.total,
+            percentage: page.percentage,
+          }}
+          scroll={scroll}
         />
       </div>
-    </>
+    </div>
   );
 }
 
 export default Reader;
+
+// const getPosition = (e?: any) => {
+//   var posy = 0;
+//   let posx = 0;
+//   let selection;
+//   let iframeBody = document.getElementsByTagName("iframe");
+//   for (var i = 0, len = iframeBody.length; i < len; i++) {
+//     var doc = iframeBody[i]?.contentWindow?.document;
+//     const sel = doc?.getSelection();
+//     if (sel.type === "None") continue;
+//     selection = sel;
+//   }
+//   if (selection) {
+//     let range = selection.getRangeAt(0).cloneRange();
+//     if (!range.getClientRects) return;
+//     posy = range.getClientRects().item(0).y;
+//     posx = range.getClientRects().item(0).x;
+//      setY(posy);
+//      setX(posx);
+//   }
+// };

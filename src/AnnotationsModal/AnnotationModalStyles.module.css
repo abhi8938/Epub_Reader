@@ -4,7 +4,7 @@
 
 .parent {
   width: "100%";
-  background-color: white;
+  height: 100vh;
 }
 
 .header {
@@ -21,12 +21,12 @@
 
 .topBar {
   display: flex;
-  width: 70%;
-  max-width: 220px;
+  width: 50%;
+  max-width: 170px;
   align-items: center;
   justify-content: space-between;
-  padding: 7px 5%;
-  background-color: #e6e6e6;
+  padding: 5pt 8px;
+  /* background-color: #f5f5f5; */
   border-radius: 10px;
   margin: auto auto;
 }
@@ -35,15 +35,16 @@
   background-color: transparent;
   outline: transparent;
   border: transparent;
-  font-size: 16px;
-  font-style: italic;
-  font-weight: 200;
-  color: black;
+  font-size: 14px;
+
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   cursor: pointer;
 }
 
 .content {
   width: 100%;
+
   padding: 0px 5%;
   box-sizing: border-box;
 }
